@@ -29,11 +29,27 @@ public class ATCManagement : MonoBehaviour
             cardKeys[randCard] = cardKeys[totalCards];
             cardKeys[totalCards] = value;
         }
+
         for (int i = 0; i < cards.Length; i++)
         {
             // Assigns shuffled cards to cardData objs.
             cards[i].cardName = cardKeys[i];
             DeckData.cardDeck[cardKeys[i]] = true;
+
+            // Extract the rank from the cardName property
+            string rank = cards[i].cardName.Split(' ')[0];
+
+            // Set the cardNum property
+            if (rank == "Ace")
+                cards[i].cardNum = 1;
+            else if (rank == "Jack")
+                cards[i].cardNum = 11;
+            else if (rank == "Queen")
+                cards[i].cardNum = 12;
+            else if (rank == "King")
+                cards[i].cardNum = 13;
+            else
+                cards[i].cardNum = int.Parse(rank);
         }
     }
 

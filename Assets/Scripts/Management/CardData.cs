@@ -7,5 +7,6 @@ using UnityEngine;
 public class CardData : MonoBehaviour
 {
     public string cardName = "";
-    public bool isShown = false;
+    public int cardNum;
+    public bool isShown = false;    
 }
