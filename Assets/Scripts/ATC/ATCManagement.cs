@@ -40,6 +40,9 @@ public class ATCManagement : MonoBehaviour
     /// <summary> method <c>SwitchCardUp</c> Changes image sprite to face up card, disables outline. </summary>
     public void SwitchCardUp(CardData cardData)
     {
+        // Prevents method from running if already shown.
+        if (cardData.isShown) { return; }
+
         // Get the Image component attached to this object
         Image image = cardData.gameObject.GetComponent<Image>();
 
@@ -52,9 +55,11 @@ public class ATCManagement : MonoBehaviour
 
         // Set the sprite of the Image component
         image.sprite = sprite;
+        cardData.isShown = true;
 
         // Disables outline.
         cardData.gameObject.GetComponent<Outline>().enabled = false;
+        cardData.gameObject.GetComponent<UIDraggable>().enabled = true;
     }
 
     // Start is called before the first frame update
