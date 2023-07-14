@@ -6,7 +6,9 @@ public class PileInteract : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("draggableUI") && collision.GetComponent<CardData>().cardNum.ToString() == this.name)
+        CardData cardData = collision.GetComponent<CardData>();
+
+        if (collision.CompareTag("draggableUI") && cardData.cardNum.ToString() == this.name && cardData.isShown)
         {
             collision.transform.GetComponent<UIDraggable>().enabled = false;
 

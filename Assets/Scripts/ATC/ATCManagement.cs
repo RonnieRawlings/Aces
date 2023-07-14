@@ -75,9 +75,10 @@ public class ATCManagement : MonoBehaviour
         image.sprite = sprite;
         cardData.isShown = true;
 
-        // Disables outline.
+        // Disables outline + prevents outline issues.
         cardData.gameObject.GetComponent<Outline>().enabled = false;
         cardData.gameObject.GetComponent<UIDraggable>().enabled = true;
+        cardData.transform.parent = mainCanvas.transform.GetChild(1);
 
         // Highlights correct pile.
         HighlightCorrectPile(cardData);
@@ -89,7 +90,7 @@ public class ATCManagement : MonoBehaviour
         {
             if (child.name == cardData.cardNum.ToString())
             {
-                child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;
+                child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;           
             }
             else
             {
