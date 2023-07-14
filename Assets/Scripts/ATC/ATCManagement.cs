@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class ATCManagement : MonoBehaviour
 {
+    [SerializeField] private GameObject mainCanvas;
+
     /// <summary> method <c>SetCardData</c> Sets each CardData obj to a unique card in the 52 card deck. </summary>
     public void SetCardData()
     {
@@ -76,6 +78,24 @@ public class ATCManagement : MonoBehaviour
         // Disables outline.
         cardData.gameObject.GetComponent<Outline>().enabled = false;
         cardData.gameObject.GetComponent<UIDraggable>().enabled = true;
+
+        // Highlights correct pile.
+        HighlightCorrectPile(cardData);
+    }
+
+    public void HighlightCorrectPile(CardData cardData)
+    {
+        foreach (Transform child in mainCanvas.transform.GetChild(1))
+        {
+            if (child.name == cardData.cardNum.ToString())
+            {
+                child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;
+            }
+            else
+            {
+
+            }
+        }
     }
 
     // Start is called before the first frame update
