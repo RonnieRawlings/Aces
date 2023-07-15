@@ -84,17 +84,20 @@ public class ATCManagement : MonoBehaviour
         HighlightCorrectPile(cardData);
     }
 
+    /// <summary> method <c>HighlightCorrectPile</c> Finds correct card pile for active card, enables ouline + interactable button. </summary>
     public void HighlightCorrectPile(CardData cardData)
     {
+        // Searches through every child pile.
         foreach (Transform child in mainCanvas.transform.GetChild(1))
         {
+            // If correct pile found, enable outline + button interact.
             if (child.name == cardData.cardNum.ToString())
             {
-                child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;           
-            }
-            else
-            {
+                child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;
 
+                ColorBlock colors = child.GetChild(child.childCount - 1).GetComponent<Button>().colors;
+                colors.disabledColor = new Color(colors.disabledColor.r, colors.disabledColor.g, colors.disabledColor.b, 255f / 255f);
+                child.GetChild(child.childCount - 1).GetComponent<Button>().colors = colors;
             }
         }
     }
@@ -102,6 +105,6 @@ public class ATCManagement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SetCardData();
+        SetCardData(); // Randomises card data, makes each round unique.
     }
 }

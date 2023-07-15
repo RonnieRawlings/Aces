@@ -1,6 +1,9 @@
+// Author - Ronnie Rawlings.
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PileInteract : MonoBehaviour
 {
@@ -17,6 +20,20 @@ public class PileInteract : MonoBehaviour
 
             collision.transform.position = transform.GetChild(0).position + (transform.up * 30);
             collision.transform.SetAsFirstSibling();
+
+            // Searches through every child pile.
+            foreach (Transform child in GameObject.Find("Canvas").transform.GetChild(1))
+            {
+                // If correct pile found, enable outline + button interact.
+                if (child.name == cardData.cardNum.ToString())
+                {
+                    child.GetChild(child.childCount - 1).GetComponent<Button>().interactable = true;                    
+                }
+                else
+                {
+
+                }
+            }
         }
     }
 }
