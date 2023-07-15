@@ -96,9 +96,9 @@ public class ATCManagement : MonoBehaviour
                 child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;
 
                 ColorBlock colors = child.GetChild(child.childCount - 1).GetComponent<Button>().colors;
-                colors.disabledColor = new Color(colors.disabledColor.r, colors.disabledColor.g, colors.disabledColor.b, 255f / 255f);
+                colors.disabledColor = new Color(255, 255, 255, 255f / 255f);
                 child.GetChild(child.childCount - 1).GetComponent<Button>().colors = colors;
-            }
+            }            
         }
     }
 
