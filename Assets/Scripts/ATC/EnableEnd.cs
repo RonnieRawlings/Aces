@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class EnableEnd : MonoBehaviour
@@ -22,13 +23,20 @@ public class EnableEnd : MonoBehaviour
 
         if (index == 4)
         {
+            // Shows end screen.
             endScreen.SetActive(true);
+
+            // Calculates how close to winning the game was, resets shown data.
+            endScreen.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = gameObject.GetComponent<ATCManagement>()
+                .CalculateFinalPercentage() + "%";
+            DeckData.amountShown = 0;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Checks if end should be shown if not enabled.
         if (!endScreen.activeInHierarchy)
         {
             EndCheck();

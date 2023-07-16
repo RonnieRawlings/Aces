@@ -102,6 +102,13 @@ public class ATCManagement : MonoBehaviour
         }
     }
 
+    /// <summary> method <c>CalculateFinalPercentage</c> Takes how many cards have been turned face up and uses max cards to calculate a final %. </summary>
+    public string CalculateFinalPercentage()
+    {
+        float finalPercent = (float)System.Math.Round((DeckData.amountShown / 52.0) * 100);
+        return finalPercent.ToString();
+    }
+
     // Start is called before the first frame update
     void Start()
     {

@@ -6,6 +6,12 @@ using UnityEngine;
 
 public static class DeckData
 {
+    #region ATC Variables
+
+    public static int amountShown;
+
+    #endregion
+
     public static Dictionary<string, bool> cardDeck; // Contains current card selection.
 
     /// <summary> static constructor <c>DeckData</c> Constructor that fills dictionary data with card data. </summary>
