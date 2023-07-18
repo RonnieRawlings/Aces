@@ -51,6 +51,11 @@ public class ShowHand : MonoBehaviour
 
             // Increment xSpacing for next card
             xSpacing += cardWidth + spacing;
+
+            // Add CardHover script to obj.
+            cardObject.AddComponent<CardHover>();
         }
+
+        GetComponent<Button>().interactable = false;
     }
 }
