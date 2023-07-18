@@ -12,6 +12,12 @@ public static class DeckData
 
     #endregion
 
+    #region NM Variables
+
+
+
+    #endregion
+
     public static Dictionary<string, bool> cardDeck; // Contains current card selection.
 
     /// <summary> static constructor <c>DeckData</c> Constructor that fills dictionary data with card data. </summary>
