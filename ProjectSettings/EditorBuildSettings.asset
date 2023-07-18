@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/S_ATC.unity
     guid: d828b57972c3cf34787a7d00b1208d19
+  - enabled: 1
+    path: Assets/Scenes/S_NewMarket.unity
+    guid: 82e8218b32ef37c4cb868f443f8b0145
   m_configObjects: {}

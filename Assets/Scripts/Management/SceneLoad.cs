@@ -12,4 +12,10 @@ public class SceneLoad : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+
+    /// <summary> method <c>QuitGame</c> Closes the window, only works in build. </summary>
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

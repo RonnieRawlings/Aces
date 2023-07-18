@@ -96,10 +96,17 @@ public class ATCManagement : MonoBehaviour
                 child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = true;
 
                 ColorBlock colors = child.GetChild(child.childCount - 1).GetComponent<Button>().colors;
-                colors.disabledColor = new Color(colors.disabledColor.r, colors.disabledColor.g, colors.disabledColor.b, 255f / 255f);
+                colors.disabledColor = new Color(255, 255, 255, 255f / 255f);
                 child.GetChild(child.childCount - 1).GetComponent<Button>().colors = colors;
-            }
+            }            
         }
+    }
+
+    /// <summary> method <c>CalculateFinalPercentage</c> Takes how many cards have been turned face up and uses max cards to calculate a final %. </summary>
+    public string CalculateFinalPercentage()
+    {
+        float finalPercent = (float)System.Math.Round((DeckData.amountShown / 52.0) * 100);
+        return finalPercent.ToString();
     }
 
     // Start is called before the first frame update

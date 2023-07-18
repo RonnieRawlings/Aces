@@ -11,6 +11,8 @@ public class CardData : MonoBehaviour
     public int cardNum;
     public bool isShown = false;
 
+    private bool hasIncremented;
+
     void Start()
     {
         // Prevents starting card from changing.
@@ -24,5 +26,14 @@ public class CardData : MonoBehaviour
         ColorBlock colors = this.GetComponent<Button>().colors;
         colors.disabledColor = new Color(colors.disabledColor.r, colors.disabledColor.g, colors.disabledColor.b, 200f / 255f);
         this.GetComponent<Button>().colors = colors;
+    }
+
+    void Update()
+    {
+        if (isShown && !hasIncremented)
+        {
+            hasIncremented = true;
+            DeckData.amountShown++;
+        }
     }
 }

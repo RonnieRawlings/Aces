@@ -27,11 +27,18 @@ public class PileInteract : MonoBehaviour
                 // If correct pile found, enable outline + button interact.
                 if (child.name == cardData.cardNum.ToString())
                 {
-                    child.GetChild(child.childCount - 1).GetComponent<Button>().interactable = true;                    
-                }
-                else
-                {
-
+                    if (child.GetChild(child.childCount - 1).GetComponent<CardData>().isShown)
+                    {
+                        child.parent.Find("13").GetChild(child.parent.Find("13").childCount - 1).GetComponent<Button>().interactable = true;
+                        child.parent.Find("13").GetChild(child.parent.Find("13").childCount - 1).GetComponent<Outline>().enabled = true;
+                        child.GetChild(child.childCount - 1).GetComponent<Outline>().enabled = false;
+                        break;
+                    }
+                    else
+                    {
+                        child.GetChild(child.childCount - 1).GetComponent<Button>().interactable = true;
+                        break;
+                    }                                      
                 }
             }
         }
