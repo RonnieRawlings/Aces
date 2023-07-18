@@ -49,6 +49,29 @@ public class NewMarketManagement : MonoBehaviour
             }
             playerIndex = (playerIndex + 1) % 5;
         }
+
+        OrderHands(); // Puts each hand in the correct starting order.
+    }
+
+    /// <summary> method <c>OrderHands</c> Eaiser way to order each hand, calls the OrderHand method for each hand. </summary>
+    public void OrderHands()
+    {
+        playerOne = OrderHand(playerOne);
+        playerTwo = OrderHand(playerTwo);
+        playerThree = OrderHand(playerThree);
+        playerFour = OrderHand(playerFour);
+        dummyHand = OrderHand(dummyHand);
+    }
+
+    /// <summary> method <c>OrderHand</c> Takes a list as input & uses Linq to sort the list by suit then rank. </summary>
+    private List<string> OrderHand(List<string> hand)
+    {
+        var suitOrder = new List<string> { "Hearts", "Diamonds", "Spades", "Clubs" };
+        var rankOrder = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+
+        return hand.OrderBy(card => suitOrder.IndexOf(card.Split(' ')[2]))
+                   .ThenBy(card => rankOrder.IndexOf(card.Split(' ')[0]))
+                   .ToList();
     }
 
     // Start is called before the first frame update
