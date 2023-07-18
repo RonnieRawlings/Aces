@@ -4,11 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewMarketManagement : MonoBehaviour
 {
+    [SerializeField] private GameObject canvas;
     [SerializeField] private List<string> playerOne, playerTwo, playerThree, playerFour, dummyHand;
-
+    
     #region Player Hand Properties
 
     /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, only get. </summary>
@@ -18,7 +20,6 @@ public class NewMarketManagement : MonoBehaviour
     }
 
     #endregion
-
 
     public void SetPlayerData()
     {
@@ -85,15 +86,30 @@ public class NewMarketManagement : MonoBehaviour
                    .ToList();
     }
 
+    /// <summary> method <c>ClickEvent</c> Places the card down in the pile & removes the card from players deck/hand. 
+    public void PlaceCardDown(GameObject card)
+    {
+        // Gets card image, name, & removes card obj.
+        Sprite replacementSprite = card.GetComponent<Image>().sprite;
+        string cardName = replacementSprite.name;
+
+        card.transform.parent.GetComponent<Button>().interactable = true;
+
+        foreach (Transform child in card.transform.parent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Replaces sprite.
+        Image placeImage = canvas.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        placeImage.sprite = replacementSprite;
+
+        playerOne.Remove(cardName); // Removes card from players hand.
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         SetPlayerData();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

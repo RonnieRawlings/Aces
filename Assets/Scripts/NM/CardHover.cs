@@ -2,8 +2,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -12,6 +14,9 @@ public class CardHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     void Start()
     {
         initialPosition = transform.position;
+
+        Button button = transform.gameObject.AddComponent<Button>();
+        button.onClick.AddListener(() => GameObject.Find("GameManager").GetComponent<NewMarketManagement>().PlaceCardDown(this.gameObject));
     }
 
     public void OnPointerEnter(PointerEventData eventData)
