@@ -9,6 +9,17 @@ public class NewMarketManagement : MonoBehaviour
 {
     [SerializeField] private List<string> playerOne, playerTwo, playerThree, playerFour, dummyHand;
 
+    #region Player Hand Properties
+
+    /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, only get. </summary>
+    public List<string> PlayerOne
+    {
+        get { return playerOne; }
+    }
+
+    #endregion
+
+
     public void SetPlayerData()
     {
         // Initilises players hands lists.
