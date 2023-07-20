@@ -21,6 +21,22 @@ public class NewMarketManagement : MonoBehaviour
 
     #endregion
 
+    #region Game Start Vars
+
+    private bool startTokensPlaced = false;
+
+    #endregion
+
+    #region Game Start Properties
+
+    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, only set. </summary>
+    public bool StartTokesnPlaced
+    {
+        set { startTokensPlaced = value; }
+    }
+
+    #endregion
+
     public void SetPlayerData()
     {
         // Initilises players hands lists.
