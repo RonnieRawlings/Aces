@@ -38,6 +38,6 @@ public class PlayTokens : MonoBehaviour
         }
 
         // Starting token placement has finished.
-        nmManagement.StartTokesnPlaced = true;
+        nmManagement.StartTokensPlaced = true;
     }
 }

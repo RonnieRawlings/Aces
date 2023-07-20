@@ -26,10 +26,4 @@ public class CPUBehaviour : MonoBehaviour
     {
         StartingPlay();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

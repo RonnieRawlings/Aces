@@ -23,14 +23,14 @@ public class NewMarketManagement : MonoBehaviour
 
     #region Game Start Vars
 
-    private bool startTokensPlaced = false;
+    private bool startTokensPlaced = false, hasEnabledHand = false;
 
     #endregion
 
     #region Game Start Properties
 
     /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, only set. </summary>
-    public bool StartTokesnPlaced
+    public bool StartTokensPlaced
     {
         set { startTokensPlaced = value; }
     }
@@ -127,5 +127,16 @@ public class NewMarketManagement : MonoBehaviour
     void Start()
     {
         SetPlayerData();
+    }
+
+    // Called once per frame.
+    private void Update()
+    {
+        // Enables player hand when tokens are placed.
+        if (startTokensPlaced && !hasEnabledHand)
+        {
+            canvas.transform.GetChild(canvas.transform.childCount - 1).GetComponent<Button>().interactable = true;
+            hasEnabledHand = true;
+        }
     }
 }
