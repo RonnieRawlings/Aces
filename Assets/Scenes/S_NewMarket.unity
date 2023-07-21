@@ -1934,6 +1934,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 574286337}
+  - component: {fileID: 574286338}
   m_Layer: 0
   m_Name: LayedCards
   m_TagString: Untagged
@@ -1960,6 +1961,19 @@ Transform:
   m_Father: {fileID: 135998891}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &574286338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574286336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 360edb91a0a1f3f42915be8692c3e079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  latestCard: 
 --- !u!1 &578993302
 GameObject:
   m_ObjectHideFlags: 0
@@ -3054,6 +3068,9 @@ MonoBehaviour:
   - {fileID: 14722719}
   - {fileID: 1116188559}
   playerTokens: 10
+  nm: {fileID: 335155550}
+  playerHand: []
+  layCardPos: {fileID: 1199213236}
 --- !u!1 &904772766
 GameObject:
   m_ObjectHideFlags: 0
@@ -4580,6 +4597,9 @@ MonoBehaviour:
   - {fileID: 199486648}
   - {fileID: 1943997177}
   playerTokens: 10
+  nm: {fileID: 335155550}
+  playerHand: []
+  layCardPos: {fileID: 1444364811}
 --- !u!1 &1878383273
 GameObject:
   m_ObjectHideFlags: 0
@@ -4940,6 +4960,9 @@ MonoBehaviour:
   - {fileID: 715724884}
   - {fileID: 2057010718}
   playerTokens: 10
+  nm: {fileID: 335155550}
+  playerHand: []
+  layCardPos: {fileID: 578993304}
 --- !u!1 &1943997177
 GameObject:
   m_ObjectHideFlags: 0

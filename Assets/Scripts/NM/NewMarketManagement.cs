@@ -19,6 +19,24 @@ public class NewMarketManagement : MonoBehaviour
         get { return playerOne; }
     }
 
+    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, only get. </summary>
+    public List<string> PlayerTwo
+    {
+        get { return playerTwo; }
+    }
+
+    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, only get. </summary>
+    public List<string> PlayerThree
+    {
+        get { return playerThree; }
+    }
+
+    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, only get. </summary>
+    public List<string> PlayerFour
+    {
+        get { return playerFour; }
+    }
+
     #endregion
 
     #region Game Start Vars
