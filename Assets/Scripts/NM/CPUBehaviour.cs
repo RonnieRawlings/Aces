@@ -19,9 +19,6 @@ public class CPUBehaviour : MonoBehaviour
     [SerializeField] private List<string> playerHand = new List<string>();
     [SerializeField] private Image layCardPos;
 
-    // Prevented multiple coroutines.
-    private bool isLaying = false;
-
     /// <summary> method <c>StartingPlay</c> Starts the CPUs play, places starting tokens + chooses a horse. </summary>
     public void StartingPlay()
     {
@@ -72,10 +69,10 @@ public class CPUBehaviour : MonoBehaviour
             string nextCard = nextRank + " of " + currentSuit;
 
             // Check if playerOne contains the next card
-            if (playerHand.Contains(nextCard))
+            if (playerHand.Contains(nextCard) && !NMStaticData.shouldWait)
             {
                 // Lays down the next card.
-                if (!isLaying) { StartCoroutine(LayNextCard(nextCard)); }
+                StartCoroutine(LayNextCard(nextCard));
             }
         }
     }
@@ -84,13 +81,11 @@ public class CPUBehaviour : MonoBehaviour
     public IEnumerator LayNextCard(string cardName)
     {
         // Prevents multiple laying routines + gives player time to adjust.
-        isLaying = true; 
+        NMStaticData.shouldWait = true; 
         yield return new WaitForSeconds(0.5f);
 
-        // Access beforeLay child, shows player the card.
-        GameObject beforeLay = transform.GetChild(transform.childCount - 1).gameObject;
-        beforeLay.SetActive(true);
-        Debug.Log(beforeLay.name);
+        // Outline, shows player the card.
+        layCardPos.GetComponent<Outline>().enabled = true;
 
         // Extract the suit from the card name
         string[] words = cardName.Split(' ');
@@ -98,18 +93,13 @@ public class CPUBehaviour : MonoBehaviour
 
         // Load the sprite from the Resources folder
         Sprite cardSprite = Resources.Load<Sprite>("Art/Playing Cards/" + suit + "/" + cardName);
-
-        // Show card before laying.
-        beforeLay.GetComponent<Image>().sprite = cardSprite;
+        layCardPos.sprite = cardSprite;
 
         // Wait before placing, gives player time to view.
         yield return new WaitForSeconds(2f);
-        beforeLay.SetActive(false);
-        
-        // Place card down in provided place.
-        layCardPos.sprite = cardSprite;
+        layCardPos.GetComponent<Outline>().enabled = false;
 
-        isLaying = false; // Allows more laying routines.
+        NMStaticData.shouldWait = false; // Allows more laying routines.
     }
 
     // Start is called before the first frame update
