@@ -97,7 +97,7 @@ public class ShowHand : MonoBehaviour
             else if (words[0] == "King")
                 rank = 13;
             else
-                rank = int.Parse(words[0]);
+                rank = int.Parse(words[0]);           
 
             // Load the sprite from the Resources folder
             Sprite cardSprite = Resources.Load<Sprite>("Art/Playing Cards/" + suit + "/" + playerHand[i]);
@@ -125,11 +125,40 @@ public class ShowHand : MonoBehaviour
             // Add CardHover script to obj.
             cardObject.AddComponent<CardHover>();
 
-            // Disable button if card is not a black card or not the lowest black card
-            if (suit != "Spades" && suit != "Clubs" || rank != lowestBlackCard)
+            if (string.IsNullOrEmpty(NMStaticData.latestCard))
             {
-                Button button = cardObject.GetComponent<Button>();
-                button.interactable = false;
+                // Disable button if card is not a black card or not the lowest black card
+                if (suit != "Spades" && suit != "Clubs" || rank != lowestBlackCard)
+                {
+                    Button button = cardObject.GetComponent<Button>();
+                    button.interactable = false;
+                }
+            }    
+            else
+            {
+                // Extract the suit and rank from latestCard var;
+                string[] latestWords = NMStaticData.latestCard.Split(' ');
+                string latestSuit = latestWords[latestWords.Length - 1];
+                int latestRank;
+
+                // Prevents string formatting error.
+                if (latestWords[0] == "Ace")
+                    latestRank = 14;
+                else if (latestWords[0] == "Jack")
+                    latestRank = 11;
+                else if (latestWords[0] == "Queen")
+                    latestRank = 12;
+                else if (latestWords[0] == "King")
+                    latestRank = 13;
+                else
+                    latestRank = int.Parse(latestWords[0]);
+
+                // Disables any card that's not the next in the suit.
+                if (suit != latestSuit || rank != latestRank + 1)
+                {
+                    Button button = cardObject.GetComponent<Button>();
+                    button.interactable = false;
+                }
             }
         }
     }
