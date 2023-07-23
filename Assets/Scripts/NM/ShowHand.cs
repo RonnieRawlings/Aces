@@ -42,6 +42,34 @@ public class ShowHand : MonoBehaviour
         // Gets access to players hand.
         List<string> playerHand = GameObject.Find("GameManager").GetComponent<NewMarketManagement>().PlayerOne;
 
+        // Find the lowest black card in player's hand
+        int lowestBlackCard = int.MaxValue;
+        foreach (string card in playerHand)
+        {
+            // Extract the suit and rank from the card name
+            string[] words = card.Split(' ');
+            string suit = words[words.Length - 1];
+            int rank;
+
+            // Prevents string formatting error.
+            if (words[0] == "Ace")
+                rank = 14;
+            else if (words[0] == "Jack")
+                rank = 11;
+            else if (words[0] == "Queen")
+                rank = 12;
+            else if (words[0] == "King")
+                rank = 13;
+            else
+                rank = int.Parse(words[0]);
+
+            // Check if card is black and has a lower rank than current lowestBlackCard
+            if ((suit == "Spades" || suit == "Clubs") && rank < lowestBlackCard)
+            {
+                lowestBlackCard = rank;
+            }
+        }
+
         // Calculate spacing between cards
         float cardWidth = 100;
         float spacing = 20;
@@ -54,9 +82,22 @@ public class ShowHand : MonoBehaviour
         // Iterate through playerHand list
         for (int i = 0; i < playerHand.Count; i++)
         {
-            // Extract the suit from the card name
+            // Extract the suit and rank from the card name
             string[] words = playerHand[i].Split(' ');
             string suit = words[words.Length - 1];
+            int rank;
+
+            // Prevents string formatting error.
+            if (words[0] == "Ace")
+                rank = 14;
+            else if (words[0] == "Jack")
+                rank = 11;
+            else if (words[0] == "Queen")
+                rank = 12;
+            else if (words[0] == "King")
+                rank = 13;
+            else
+                rank = int.Parse(words[0]);
 
             // Load the sprite from the Resources folder
             Sprite cardSprite = Resources.Load<Sprite>("Art/Playing Cards/" + suit + "/" + playerHand[i]);
@@ -83,6 +124,13 @@ public class ShowHand : MonoBehaviour
 
             // Add CardHover script to obj.
             cardObject.AddComponent<CardHover>();
+
+            // Disable button if card is not a black card or not the lowest black card
+            if (suit != "Spades" && suit != "Clubs" || rank != lowestBlackCard)
+            {
+                Button button = cardObject.GetComponent<Button>();
+                button.interactable = false;
+            }
         }
     }
 
