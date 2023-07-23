@@ -36,6 +36,30 @@ public class ShowHand : MonoBehaviour
         }
     }
 
+    /// <summary> method <c>ExtractSuitAndRank</c> Extracts the suit & the rank from the given card, return in List<string> format. </summary>
+    public List<string> ExtractSuitAndRank(string cardName)
+    {
+        // Extract the suit and rank from the card name
+        string[] words = cardName.Split(' ');
+        string suit = words[words.Length - 1];
+        int rank;
+
+        // Prevents string formatting error.
+        if (words[0] == "Ace")
+            rank = 14;
+        else if (words[0] == "Jack")
+            rank = 11;
+        else if (words[0] == "Queen")
+            rank = 12;
+        else if (words[0] == "King")
+            rank = 13;
+        else
+            rank = int.Parse(words[0]);
+
+        // Returns suit & rank in a list.
+        return new List<string>() { suit, rank.ToString() };
+    }
+
     /// <summary> method <c>ShowPlayerHand</c> Shows the players current hand on button press. </summary>
     public void ShowPlayerHand()
     {
@@ -46,27 +70,13 @@ public class ShowHand : MonoBehaviour
         int lowestBlackCard = int.MaxValue;
         foreach (string card in playerHand)
         {
-            // Extract the suit and rank from the card name
-            string[] words = card.Split(' ');
-            string suit = words[words.Length - 1];
-            int rank;
-
-            // Prevents string formatting error.
-            if (words[0] == "Ace")
-                rank = 14;
-            else if (words[0] == "Jack")
-                rank = 11;
-            else if (words[0] == "Queen")
-                rank = 12;
-            else if (words[0] == "King")
-                rank = 13;
-            else
-                rank = int.Parse(words[0]);
-
+            // Gets suit & rank of current card.
+            List<string> cardValues = ExtractSuitAndRank(card);
+            
             // Check if card is black and has a lower rank than current lowestBlackCard
-            if ((suit == "Spades" || suit == "Clubs") && rank < lowestBlackCard)
+            if ((cardValues[0] == "Spades" || cardValues[0] == "Clubs") && int.Parse(cardValues[1]) < lowestBlackCard)
             {
-                lowestBlackCard = rank;
+                lowestBlackCard = int.Parse(cardValues[1]);
             }
         }
 
@@ -82,25 +92,11 @@ public class ShowHand : MonoBehaviour
         // Iterate through playerHand list
         for (int i = 0; i < playerHand.Count; i++)
         {
-            // Extract the suit and rank from the card name
-            string[] words = playerHand[i].Split(' ');
-            string suit = words[words.Length - 1];
-            int rank;
-
-            // Prevents string formatting error.
-            if (words[0] == "Ace")
-                rank = 14;
-            else if (words[0] == "Jack")
-                rank = 11;
-            else if (words[0] == "Queen")
-                rank = 12;
-            else if (words[0] == "King")
-                rank = 13;
-            else
-                rank = int.Parse(words[0]);           
+            // Gets suit & rank of current card.
+            List<string> cardValues = ExtractSuitAndRank(playerHand[i]);         
 
             // Load the sprite from the Resources folder
-            Sprite cardSprite = Resources.Load<Sprite>("Art/Playing Cards/" + suit + "/" + playerHand[i]);
+            Sprite cardSprite = Resources.Load<Sprite>("Art/Playing Cards/" + cardValues[0] + "/" + playerHand[i]);
 
             // Create new GameObject
             GameObject cardObject = new GameObject(playerHand[i]);
@@ -128,7 +124,7 @@ public class ShowHand : MonoBehaviour
             if (string.IsNullOrEmpty(NMStaticData.latestCard))
             {
                 // Disable button if card is not a black card or not the lowest black card
-                if (suit != "Spades" && suit != "Clubs" || rank != lowestBlackCard)
+                if (cardValues[0] != "Spades" && cardValues[0] != "Clubs" || int.Parse(cardValues[1]) != lowestBlackCard)
                 {
                     Button button = cardObject.GetComponent<Button>();
                     button.interactable = false;
@@ -136,25 +132,11 @@ public class ShowHand : MonoBehaviour
             }    
             else
             {
-                // Extract the suit and rank from latestCard var;
-                string[] latestWords = NMStaticData.latestCard.Split(' ');
-                string latestSuit = latestWords[latestWords.Length - 1];
-                int latestRank;
-
-                // Prevents string formatting error.
-                if (latestWords[0] == "Ace")
-                    latestRank = 14;
-                else if (latestWords[0] == "Jack")
-                    latestRank = 11;
-                else if (latestWords[0] == "Queen")
-                    latestRank = 12;
-                else if (latestWords[0] == "King")
-                    latestRank = 13;
-                else
-                    latestRank = int.Parse(latestWords[0]);
+                // Gets suit & rank of the latest layed card.
+                List<string> latestCard = ExtractSuitAndRank(NMStaticData.latestCard);
 
                 // Disables any card that's not the next in the suit.
-                if (suit != latestSuit || rank != latestRank + 1)
+                if (cardValues[0] != latestCard[0] || int.Parse(cardValues[1]) != int.Parse(latestCard[1]) + 1)
                 {
                     Button button = cardObject.GetComponent<Button>();
                     button.interactable = false;
