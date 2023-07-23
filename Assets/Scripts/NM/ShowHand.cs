@@ -7,6 +7,35 @@ using UnityEngine.UI;
 
 public class ShowHand : MonoBehaviour
 {
+    // Decides if hand needs to be shown.
+    [SerializeField] private bool handShown = false;
+
+    #region Properties
+
+    /// <summary> property <c>HandShown</c> Allows safe access to the handShown variable for outside scripts, only set. </summary>
+    public bool HandShown
+    {
+        set { handShown = value; }
+    }
+
+    #endregion
+
+    /// <summary> method <c>ChooseHandMethod</c> Uses handShown bool to decide which method should be called. </summary>
+    public void ChooseHandMethod()
+    {
+        // Closes/shows card hand depending on handShown.
+        if (handShown)
+        {
+            ClosePlayerHand();
+            handShown = false;
+        }
+        else
+        {
+            ShowPlayerHand();
+            handShown = true;
+        }
+    }
+
     /// <summary> method <c>ShowPlayerHand</c> Shows the players current hand on button press. </summary>
     public void ShowPlayerHand()
     {
@@ -14,8 +43,8 @@ public class ShowHand : MonoBehaviour
         List<string> playerHand = GameObject.Find("GameManager").GetComponent<NewMarketManagement>().PlayerOne;
 
         // Calculate spacing between cards
-        float cardWidth = 100; // Width of a card
-        float spacing = 20; // Spacing between cards
+        float cardWidth = 100;
+        float spacing = 20;
 
         // Calculate initial xSpacing value to center middle card
         float totalWidth = playerHand.Count * cardWidth + (playerHand.Count - 1) * spacing;
@@ -55,7 +84,15 @@ public class ShowHand : MonoBehaviour
             // Add CardHover script to obj.
             cardObject.AddComponent<CardHover>();
         }
+    }
 
-        GetComponent<Button>().interactable = false;
+    /// <summary> method <c>ClosePlayerHand</c> Allows the player to close their hand early, without placing a card. </summary>
+    public void ClosePlayerHand()
+    {
+        // Removes all card visuals.
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

@@ -1815,7 +1815,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 461536784}
         m_TargetAssemblyTypeName: ShowHand, Assembly-CSharp
-        m_MethodName: ShowPlayerHand
+        m_MethodName: ChooseHandMethod
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1849,6 +1849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ceef31c3344e124d939177cc6a4e87e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handShown: 0
 --- !u!1 &491469084
 GameObject:
   m_ObjectHideFlags: 0

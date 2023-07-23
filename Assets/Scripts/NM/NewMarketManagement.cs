@@ -127,8 +127,8 @@ public class NewMarketManagement : MonoBehaviour
         Sprite replacementSprite = card.GetComponent<Image>().sprite;
         string cardName = replacementSprite.name;
 
-        card.transform.parent.GetComponent<Button>().interactable = true;
-
+        // Allows hand to be re-enabled + removes all shown cards.
+        card.transform.parent.GetComponent<ShowHand>().HandShown = false;
         foreach (Transform child in card.transform.parent)
         {
             Destroy(child.gameObject);
