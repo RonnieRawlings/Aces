@@ -6,6 +6,6 @@ using UnityEngine;
 
 public static class NMStaticData
 {
-    public static string latestCard;
+    public static string latestCard, latestPlayer, latestSuit;
     public static bool shouldWait = false;
 }

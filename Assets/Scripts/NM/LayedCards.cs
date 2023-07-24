@@ -2,13 +2,14 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LayedCards : MonoBehaviour
 {
     private Dictionary<Image, Sprite> childImages = new Dictionary<Image, Sprite>();
-    [SerializeField] private string latestCard;
+    [SerializeField] private string latestCard, latestPlayer, latestSuit;
 
     void Start()
     {
@@ -36,11 +37,15 @@ public class LayedCards : MonoBehaviour
                 // Update the stored sprite
                 childImages[image] = image.sprite;
 
-                // Pass the sprite name to NMStaticData.latestCard
+                // Pass the sprite name, suit, & player name to NMStaticData
                 NMStaticData.latestCard = image.sprite.name;
+                NMStaticData.latestPlayer = image.gameObject.name.Replace("P", "");
+                NMStaticData.latestSuit = image.sprite.name.Split(' ')[2];
             }
         }
 
-        latestCard = NMStaticData.latestCard;
+        latestSuit = NMStaticData.latestSuit;
+        latestPlayer = NMStaticData.latestPlayer;
+        latestCard = NMStaticData.latestCard;              
     }
 }
