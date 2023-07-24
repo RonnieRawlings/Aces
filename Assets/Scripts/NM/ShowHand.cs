@@ -59,6 +59,12 @@ public class ShowHand : MonoBehaviour
         // Returns suit & rank in a list.
         return new List<string>() { suit, rank.ToString() };
     }
+    
+    /// <summary> method <c>ChangeSuit</c> Changes which suits buttons are enabled. </summary>
+    public void ChangeSuit(List<string> playerHand)
+    {
+
+    }
 
     /// <summary> method <c>ShowPlayerHand</c> Shows the players current hand on button press. </summary>
     public void ShowPlayerHand()
@@ -80,6 +86,20 @@ public class ShowHand : MonoBehaviour
             }
         }
 
+        // Find the lowest red card in player's hand
+        int lowestRedCard = int.MaxValue;
+        foreach (string card in playerHand)
+        {
+            // Gets suit & rank of current card.
+            List<string> cardValues = ExtractSuitAndRank(card);
+
+            // Check if card is red and has a lower rank than current lowestBlackCard
+            if ((cardValues[0] == "Hearts" || cardValues[0] == "Diamonds") && int.Parse(cardValues[1]) < lowestRedCard)
+            {
+                lowestRedCard = int.Parse(cardValues[1]);
+            }
+        }
+
         // Calculate spacing between cards
         float cardWidth = 100;
         float spacing = 20;
@@ -88,6 +108,13 @@ public class ShowHand : MonoBehaviour
         float totalWidth = playerHand.Count * cardWidth + (playerHand.Count - 1) * spacing;
         float initialX = -totalWidth / 2 + cardWidth / 2;
         float xSpacing = initialX;
+
+        // Gets suit & rank of the latest layed card.
+        List<string> latestCard = new List<string>();
+        if (!string.IsNullOrEmpty(NMStaticData.latestCard)) { latestCard = ExtractSuitAndRank(NMStaticData.latestCard); }
+        
+        // Amount of cards buttons disabled.
+        int disabledButtons = 0;
 
         // Iterate through playerHand list
         for (int i = 0; i < playerHand.Count; i++)
@@ -128,22 +155,33 @@ public class ShowHand : MonoBehaviour
                 {
                     Button button = cardObject.GetComponent<Button>();
                     button.interactable = false;
+
+                    // Increments the db count.
+                    disabledButtons++;
                 }
             }    
             else
-            {
-                // Gets suit & rank of the latest layed card.
-                List<string> latestCard = ExtractSuitAndRank(NMStaticData.latestCard);
-
+            {               
                 // Disables any card that's not the next in the suit.
                 if (cardValues[0] != latestCard[0] || int.Parse(cardValues[1]) != int.Parse(latestCard[1]) + 1)
                 {
+                    // Disables the button.
                     Button button = cardObject.GetComponent<Button>();
                     button.interactable = false;
+
+                    // Increments the db count.
+                    disabledButtons++;
                 }
             }
         }
+
+        // Calls ChangeSuit when player has reached a dead end.
+        if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count)
+        {
+            ChangeSuit(playerHand);
+        }
     }
+
 
     /// <summary> method <c>ClosePlayerHand</c> Allows the player to close their hand early, without placing a card. </summary>
     public void ClosePlayerHand()
