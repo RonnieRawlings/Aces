@@ -11,7 +11,7 @@ public class CardHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 {
     private Vector3 initialPosition;
 
-    void Start()
+    void OnEnable()
     {
         initialPosition = transform.position;
 

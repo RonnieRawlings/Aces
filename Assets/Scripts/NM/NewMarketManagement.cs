@@ -19,6 +19,46 @@ public class NewMarketManagement : MonoBehaviour
         get { return playerOne; }
     }
 
+    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, only get. </summary>
+    public List<string> PlayerTwo
+    {
+        get { return playerTwo; }
+    }
+
+    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, only get. </summary>
+    public List<string> PlayerThree
+    {
+        get { return playerThree; }
+    }
+
+    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, only get. </summary>
+    public List<string> PlayerFour
+    {
+        get { return playerFour; }
+    }
+
+    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, only get. </summary>
+    public List<string> DummyHand
+    {
+        get { return dummyHand; }
+    }
+
+    #endregion
+
+    #region Game Start Vars
+
+    private bool startTokensPlaced = false, hasEnabledHand = false;
+
+    #endregion
+
+    #region Game Start Properties
+
+    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, only set. </summary>
+    public bool StartTokensPlaced
+    {
+        set { startTokensPlaced = value; }
+    }
+
     #endregion
 
     public void SetPlayerData()
@@ -93,8 +133,8 @@ public class NewMarketManagement : MonoBehaviour
         Sprite replacementSprite = card.GetComponent<Image>().sprite;
         string cardName = replacementSprite.name;
 
-        card.transform.parent.GetComponent<Button>().interactable = true;
-
+        // Allows hand to be re-enabled + removes all shown cards.
+        card.transform.parent.GetComponent<ShowHand>().HandShown = false;
         foreach (Transform child in card.transform.parent)
         {
             Destroy(child.gameObject);
@@ -111,5 +151,16 @@ public class NewMarketManagement : MonoBehaviour
     void Start()
     {
         SetPlayerData();
+    }
+
+    // Called once per frame.
+    private void Update()
+    {
+        // Enables player hand when tokens are placed.
+        if (startTokensPlaced && !hasEnabledHand)
+        {
+            canvas.transform.GetChild(canvas.transform.childCount - 1).GetComponent<Button>().interactable = true;
+            hasEnabledHand = true;
+        }
     }
 }
