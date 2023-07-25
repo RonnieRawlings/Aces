@@ -19,22 +19,25 @@ public class NewMarketManagement : MonoBehaviour
         get { return playerOne; }
     }
 
-    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, only get. </summary>
+    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, get & set. </summary>
     public List<string> PlayerTwo
     {
         get { return playerTwo; }
+        set { playerTwo = value; }
     }
 
-    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, only get. </summary>
+    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, get & set. </summary>
     public List<string> PlayerThree
     {
         get { return playerThree; }
+        set { playerThree = value; }
     }
 
-    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, only get. </summary>
+    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, get & set. </summary>
     public List<string> PlayerFour
     {
         get { return playerFour; }
+        set { playerFour = value; }
     }
 
     /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, only get. </summary>

@@ -77,7 +77,7 @@ public class CPUBehaviour : MonoBehaviour
             }
             else if (!NMStaticData.shouldWait && NMStaticData.latestPlayer == this.name.Split(' ')[1])
             {
-                if (nm.DummyHand.Contains(nextCard))
+                if ((!nm.PlayerOne.Contains(nextCard) && !nm.PlayerTwo.Contains(nextCard) && !nm.PlayerThree.Contains(nextCard) && !nm.PlayerFour.Contains(nextCard)) || nm.DummyHand.Contains(nextCard))
                 {
                     // Prevents other AI methods from running.
                     Debug.Log("SHOULD CHANGE SUIT!");
@@ -159,6 +159,20 @@ public class CPUBehaviour : MonoBehaviour
         // Wait before placing, gives player time to view.
         yield return new WaitForSeconds(2f);
         layCardPos.GetComponent<Outline>().enabled = false;
+
+        // Removes card from hand.
+        switch (gameObject.name)
+        {
+            case "Player 2":
+                nm.PlayerTwo.Remove(cardName);
+                break;
+            case "Player 3":
+                nm.PlayerThree.Remove(cardName);
+                break;
+            case "Player 4":
+                nm.PlayerFour.Remove(cardName);
+                break;
+        }
 
         NMStaticData.shouldWait = false; // Allows more laying routines.
     }
