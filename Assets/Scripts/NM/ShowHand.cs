@@ -61,9 +61,33 @@ public class ShowHand : MonoBehaviour
     }
     
     /// <summary> method <c>ChangeSuit</c> Changes which suits buttons are enabled. </summary>
-    public void ChangeSuit(List<string> playerHand)
+    public void ChangeSuit(List<GameObject> playerHand, int lowestCard, bool isBlack)
     {
+        // Iterate through playerHand list
+        for (int i = 0; i < playerHand.Count; i++)
+        {
+            // Gets suit & rank of current card.
+            List<string> cardValues = ExtractSuitAndRank(playerHand[i].GetComponent<Image>().sprite.name);
 
+            if (isBlack)
+            {
+                // Disable button if card is not a black card or not the lowest black card
+                if ((cardValues[0] == "Spades" || cardValues[0] == "Clubs") && int.Parse(cardValues[1]) == lowestCard)
+                {
+                    Button button = playerHand[i].GetComponent<Button>();
+                    button.interactable = true;
+                }
+            }
+            else
+            {
+                // Disable button if card is not a black card or not the lowest red card
+                if ((cardValues[0] == "Hearts" || cardValues[0] == "Diamonds") && int.Parse(cardValues[1]) == lowestCard)
+                {
+                    Button button = playerHand[i].GetComponent<Button>();
+                    button.interactable = true;
+                }
+            }
+        }
     }
 
     /// <summary> method <c>ShowPlayerHand</c> Shows the players current hand on button press. </summary>
@@ -117,6 +141,7 @@ public class ShowHand : MonoBehaviour
         int disabledButtons = 0;
 
         // Iterate through playerHand list
+        List<GameObject> createdObjs = new List<GameObject>();
         for (int i = 0; i < playerHand.Count; i++)
         {
             // Gets suit & rank of current card.
@@ -173,12 +198,22 @@ public class ShowHand : MonoBehaviour
                     disabledButtons++;
                 }
             }
+
+            // Gives access to spawned obj.
+            createdObjs.Add(cardObject);
         }
 
         // Calls ChangeSuit when player has reached a dead end.
         if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count)
         {
-            ChangeSuit(playerHand);
+            if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
+            {
+                ChangeSuit(createdObjs, lowestRedCard, false);
+            }
+            else if (NMStaticData.latestSuit == "Hearts" || NMStaticData.latestSuit == "Diamonds")
+            {
+                ChangeSuit(createdObjs, lowestBlackCard, true);
+            }
         }
     }
 
