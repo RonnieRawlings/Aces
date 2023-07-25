@@ -37,6 +37,12 @@ public class NewMarketManagement : MonoBehaviour
         get { return playerFour; }
     }
 
+    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, only get. </summary>
+    public List<string> DummyHand
+    {
+        get { return dummyHand; }
+    }
+
     #endregion
 
     #region Game Start Vars

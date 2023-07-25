@@ -68,11 +68,19 @@ public class CPUBehaviour : MonoBehaviour
             // Create the name of the next card
             string nextCard = nextRank + " of " + currentSuit;
 
-            // Check if playerOne contains the next card
+            // Check if playerOne contains the next card OR should change suit.
             if (playerHand.Contains(nextCard) && !NMStaticData.shouldWait)
             {
                 // Lays down the next card.
                 StartCoroutine(LayNextCard(nextCard));
+            }
+            else if (!NMStaticData.shouldWait && NMStaticData.latestPlayer == this.name.Split(' ')[1])
+            {
+                if (nm.DummyHand.Contains(nextCard))
+                {
+                    Debug.Log("SHOULD CHANGE SUIT!");
+                    NMStaticData.shouldWait = true;
+                }
             }
         }
     }
@@ -81,7 +89,7 @@ public class CPUBehaviour : MonoBehaviour
     public IEnumerator LayNextCard(string cardName)
     {
         // Prevents multiple laying routines + gives player time to adjust.
-        NMStaticData.shouldWait = true; 
+        NMStaticData.shouldWait = true;
         yield return new WaitForSeconds(0.5f);
 
         // Outline, shows player the card.
