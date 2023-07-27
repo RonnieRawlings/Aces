@@ -20,6 +20,17 @@ public class CPUBehaviour : MonoBehaviour
     [SerializeField] private List<string> playerHand = new List<string>();
     [SerializeField] private Image layCardPos;
 
+    #region Properties
+
+    /// <summary> property <c>PlayerTokens</c> Allows safe access to the playerTokens var, get & set. </summary>
+    public int PlayerTokens
+    {
+        get { return playerTokens; }
+        set { playerTokens = value; }
+    }
+
+    #endregion
+
     /// <summary> method <c>StartingPlay</c> Starts the CPUs play, places starting tokens + chooses a horse. </summary>
     public void StartingPlay()
     {

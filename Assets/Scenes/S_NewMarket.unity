@@ -1974,7 +1974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 360edb91a0a1f3f42915be8692c3e079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  latestCard: 
+  canvas: {fileID: 135998891}
 --- !u!1 &578993302
 GameObject:
   m_ObjectHideFlags: 0
