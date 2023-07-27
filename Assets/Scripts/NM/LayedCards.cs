@@ -11,17 +11,8 @@ public class LayedCards : MonoBehaviour
     private Dictionary<Image, Sprite> childImages = new Dictionary<Image, Sprite>();
     [SerializeField] private string latestCard, latestPlayer, latestSuit;
 
-    void Start()
-    {
-        // Get all child Image components and store their current sprites
-        foreach (Image image in GetComponentsInChildren<Image>())
-        {
-            childImages[image] = image.sprite;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
+    /// <summary> method <c>UpdateStaticCardData</c> Sets static card data from just layed card. </summary>
+    public void UpdateStaticCardData()
     {
         // Create a list of keys to iterate over
         List<Image> keys = new List<Image>(childImages.Keys);
@@ -44,8 +35,38 @@ public class LayedCards : MonoBehaviour
             }
         }
 
+        // Used for debugging static data.
         latestSuit = NMStaticData.latestSuit;
         latestPlayer = NMStaticData.latestPlayer;
-        latestCard = NMStaticData.latestCard;              
+        latestCard = NMStaticData.latestCard;
+
+        // If player lays a horse card, collect tokens + flip horse.
+        if (latestCard == "Ace of Spades" || latestCard == "King of Diamonds" || latestCard == "Jack of Hearts" || latestCard == "Queen of Clubs")
+        {
+            string horseSuit = latestCard.Split(' ')[2];
+            CollectHorse(horseSuit);
+        }
+    }
+
+    /// <summary> method <c>CollectHorse</c> Gives horse tokens to player IF horse card is layed. </summary>
+    public void CollectHorse(string horseSuit)
+    {
+        Debug.Log(horseSuit);
+    }
+
+    void Start()
+    {
+        // Get all child Image components and store their current sprites
+        foreach (Image image in GetComponentsInChildren<Image>())
+        {
+            childImages[image] = image.sprite;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Updates static card data when new card is layed.
+        UpdateStaticCardData(); 
     }
 }
