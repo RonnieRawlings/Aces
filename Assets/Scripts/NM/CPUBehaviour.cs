@@ -54,6 +54,51 @@ public class CPUBehaviour : MonoBehaviour
         horseTokens[UnityEngine.Random.Range(0, 4)].SetActive(true);
     }
 
+    /// <summary> method <c>ChangeSuit</c> Finds the lowest of the opposite suit colour, lays the card. </summary>
+    public void ChangeSuit(string[] ranks)
+    {
+        if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
+        {
+            // Find the lowest card of the selected randSuit in the CPU's hand
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Hearts") || card.EndsWith("Diamonds"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // The lowest card of the selected suit in the hand.
+            string lowestRedCard = cardsOfSelectedSuit[0];
+
+            // Lays down the next card.
+            StartCoroutine(LayNextCard(lowestRedCard));
+        }
+        else
+        {
+            // Find the lowest card of the selected randSuit in the CPU's hand
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Clubs") || card.EndsWith("Spades"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // The lowest card of the selected suit in the hand.
+            string lowestBlackCard = cardsOfSelectedSuit[0];
+
+            // Lays down the next card.
+            StartCoroutine(LayNextCard(lowestBlackCard));
+        }
+    }
+
     /// <summary> method <c>CheckForNextCard</c> Spilts latestCard into rank/suit & checks if player hand has the next card. </summary>
     public void CheckForNextCard()
     {
@@ -90,62 +135,13 @@ public class CPUBehaviour : MonoBehaviour
             {
                 if ((!nm.PlayerOne.Contains(nextCard) && !nm.PlayerTwo.Contains(nextCard) && !nm.PlayerThree.Contains(nextCard) && !nm.PlayerFour.Contains(nextCard)) || nm.DummyHand.Contains(nextCard))
                 {
-                    // Prevents other AI methods from running.
-                    Debug.Log("SHOULD CHANGE SUIT!");
-                    NMStaticData.shouldWait = true;
-
-                    if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
-                    {
-                        // Switch the suit to lay to red.
-                        string randSuit;
-                        if (UnityEngine.Random.Range(0, 2) == 0) { randSuit = "Hearts"; }
-                        else { randSuit = "Diamonds"; }
-
-                        // Find the lowest card of the selected randSuit in the CPU's hand
-                        List<string> cardsOfSelectedSuit = new List<string>();
-                        foreach (string card in playerHand)
-                        {
-                            if (card.EndsWith(randSuit))
-                            {
-                                cardsOfSelectedSuit.Add(card);
-                            }
-                        }
-                        cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
-                            CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
-
-                        // The lowest card of the selected suit in the hand.
-                        string lowestCardOfSelectedSuit = cardsOfSelectedSuit[0];
-
-                        // Lays down the next card.
-                        StartCoroutine(LayNextCard(lowestCardOfSelectedSuit));
-                    }
-                    else
-                    {
-                        // Switch the suit to lay to black.
-                        string randSuit;
-                        if (UnityEngine.Random.Range(0, 2) == 0) { randSuit = "Clubs"; }
-                        else { randSuit = "Spades"; }
-
-                        // Find the lowest card of the selected randSuit in the CPU's hand
-                        List<string> cardsOfSelectedSuit = new List<string>();
-                        foreach (string card in playerHand)
-                        {
-                            if (card.EndsWith(randSuit))
-                            {
-                                cardsOfSelectedSuit.Add(card);
-                            }
-                        }
-                        cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
-                            CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
-
-                        // The lowest card of the selected suit in the hand.
-                        string lowestCardOfSelectedSuit = cardsOfSelectedSuit[0];
-
-                        // Lays down the next card.
-                        StartCoroutine(LayNextCard(lowestCardOfSelectedSuit));
-                    }
+                    ChangeSuit(ranks);
                 }
             }
+        }
+        else if (!NMStaticData.shouldWait && NMStaticData.latestPlayer == this.name.Split(' ')[1])
+        {
+            ChangeSuit(ranks);
         }
     }
 
