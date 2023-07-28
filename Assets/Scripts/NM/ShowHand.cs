@@ -204,7 +204,7 @@ public class ShowHand : MonoBehaviour
         }
 
         // Calls ChangeSuit when player has reached a dead end.
-        if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count)
+        if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count && !NMStaticData.shouldWait)
         {
             if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
             {

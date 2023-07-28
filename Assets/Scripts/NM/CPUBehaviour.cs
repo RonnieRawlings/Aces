@@ -154,7 +154,7 @@ public class CPUBehaviour : MonoBehaviour
     {
         // Prevents multiple laying routines + gives player time to adjust.
         NMStaticData.shouldWait = true;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         // Outline, shows player the card.
         layCardPos.GetComponent<Outline>().enabled = true;
