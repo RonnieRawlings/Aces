@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NewMarketManagement : MonoBehaviour
@@ -150,6 +151,32 @@ public class NewMarketManagement : MonoBehaviour
         playerOne.Remove(cardName); // Removes card from players hand.
     }
 
+    /// <summary> method <c>EndRound</c> Cleans up table, resets variables. </summary>
+    public void EndRound()
+    {
+        // Reset player hands.
+        playerOne.Clear();
+        playerTwo.Clear();
+        playerThree.Clear();
+        playerFour.Clear();
+
+        // Resets current card data + CPU booleans.
+        NMStaticData.latestPlayer = null;
+        NMStaticData.latestSuit = null;
+        NMStaticData.latestCard = null;
+        NMStaticData.shouldWait = false;      
+
+        // Resets horse cards + layed cards.
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
+
+        // Gives player new random hand.
+        SetPlayerData();
+
+        // Re-Enables starting token placement.
+        startTokensPlaced = false;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -164,6 +191,14 @@ public class NewMarketManagement : MonoBehaviour
         {
             canvas.transform.GetChild(canvas.transform.childCount - 1).GetComponent<Button>().interactable = true;
             hasEnabledHand = true;
+        }
+
+        // Checks if a player has finished their hand, if so ends the round.
+        if (playerOne.Count == 0 || playerTwo.Count == 0 || playerThree.Count == 0 || playerFour.Count == 0)
+        {
+            // Allocates middle token pile + ends the round.
+            canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
+            EndRound();
         }
     }
 }
