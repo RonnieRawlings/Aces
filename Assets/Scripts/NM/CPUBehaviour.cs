@@ -71,11 +71,18 @@ public class CPUBehaviour : MonoBehaviour
             cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
                 CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
 
-            // The lowest card of the selected suit in the hand.
-            string lowestRedCard = cardsOfSelectedSuit[0];
-
-            // Lays down the next card.
-            StartCoroutine(LayNextCard(lowestRedCard));
+            // If red card is found, lay it.
+            if (cardsOfSelectedSuit.Count > 0)
+            {
+                // Lays down the next card.
+                StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+            }
+            else
+            {
+                // Change suit to black.
+                NMStaticData.latestSuit = "Hearts";
+                ChangeSuit(ranks);
+            }                      
         }
         else
         {
@@ -91,11 +98,18 @@ public class CPUBehaviour : MonoBehaviour
             cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
                 CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
 
-            // The lowest card of the selected suit in the hand.
-            string lowestBlackCard = cardsOfSelectedSuit[0];
-
-            // Lays down the next card.
-            StartCoroutine(LayNextCard(lowestBlackCard));
+            // If red card is found, lay it.
+            if (cardsOfSelectedSuit.Count > 0)
+            {
+                // Lays down the next card.
+                StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+            }
+            else
+            {
+                // Change suit to red.
+                NMStaticData.latestSuit = "Spades";
+                ChangeSuit(ranks);
+            }
         }
     }
 
@@ -103,7 +117,7 @@ public class CPUBehaviour : MonoBehaviour
     public void CheckForNextCard()
     {
         // Prevents checking when no card has been layed.
-        if (string.IsNullOrEmpty(NMStaticData.latestCard)) { return; }
+        if (string.IsNullOrEmpty(NMStaticData.latestCard) || playerHand.Count == 0) { return; }
 
         // Define the order of ranks
         string[] ranks = new string[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
