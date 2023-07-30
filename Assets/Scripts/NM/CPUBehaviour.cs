@@ -37,6 +37,40 @@ public class CPUBehaviour : MonoBehaviour
         // Prevents multiple runs.
         if (middleToken.activeInHierarchy) { return; }
 
+        // Takes player out of the game. 
+        if (playerTokens < 2) 
+        {
+            if (gameObject.name == "Player 2") { nm.NoTokensTwo = true; }
+            else if (gameObject.name == "Player 3") { nm.NoTokensThree = true; }
+            else { nm.NoTokensFour = true; }
+
+            // Change card hand visuals.
+            Transform cards = transform.GetChild(0);
+            foreach (Transform child in cards)
+            {
+                // Access colour + alpha values, changes them.
+                Color imageColor = child.GetComponent<Image>().color;
+                imageColor.r = 200f / 255f;
+                imageColor.g = 200f / 255f;
+                imageColor.b = 200f / 255f;
+                imageColor.a = 128f / 255f;
+
+                // Applies colour changes.
+                child.GetComponent<Image>().color = imageColor;
+            }
+
+            return;
+        }
+      
+        // Plays starting tokens.
+        playerTokens = playerTokens - 2;
+        middleToken.SetActive(true);
+        horseTokens[UnityEngine.Random.Range(0, 4)].SetActive(true);
+    }
+
+    /// <summary> method <c>HandAssignment</c> Assigns the players hand to the CPU script. </summary>
+    public void HandAssignment()
+    {
         // Finds correct hand, depends on player name. 
         switch (gameObject.name)
         {
@@ -50,11 +84,6 @@ public class CPUBehaviour : MonoBehaviour
                 playerHand = nm.PlayerFour;
                 break;
         }
-
-        // Plays starting tokens.
-        playerTokens = playerTokens - 2;
-        middleToken.SetActive(true);
-        horseTokens[UnityEngine.Random.Range(0, 4)].SetActive(true);
     }
 
     /// <summary> method <c>ChangeSuit</c> Finds the lowest of the opposite suit colour, lays the card. </summary>
@@ -201,10 +230,16 @@ public class CPUBehaviour : MonoBehaviour
         NMStaticData.shouldWait = false; // Allows more laying routines.
     }
 
+    // Called once just before start.
+    void Awake()
+    {
+        StartingPlay();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        StartingPlay();
+        HandAssignment();
     }
 
     // Called once at the start of each frame.
@@ -212,6 +247,6 @@ public class CPUBehaviour : MonoBehaviour
     {
         CheckForNextCard();
 
-        if (!nm.StartTokensPlaced) { StartingPlay(); }
+        if (!nm.StartTokensPlaced) { StartingPlay(); HandAssignment(); }
     }
 }

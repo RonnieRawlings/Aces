@@ -52,6 +52,8 @@ public class NewMarketManagement : MonoBehaviour
     #region Game Start Vars
 
     private bool startTokensPlaced = false, hasEnabledHand = false;
+    public bool noTokensOne = false, noTokensTwo = false, noTokensThree = false, noTokensFour = false;
+    private bool filledPlayerOne = false, filledPlayerTwo = false, filledPlayerThree = false, filledPlayerFour;
 
     #endregion
 
@@ -70,11 +72,35 @@ public class NewMarketManagement : MonoBehaviour
         set { startTokensPlaced = value; }
     }
 
+    /// <summary> property <c>NoTokensOne</c> Allows safe access to noTokensOne var outside of this script, only get. </summary>
+    public bool NoTokensOne
+    {
+        set { noTokensOne = value; }
+    }
+
+    /// <summary> property <c>NoTokensTwo</c> Allows safe access to noTokensTwo var outside of this script, only get. </summary>
+    public bool NoTokensTwo
+    {
+        set { noTokensTwo = value; }
+    }
+
+    /// <summary> property <c>NoTokensThree</c> Allows safe access to noTokensThree var outside of this script, only get. </summary>
+    public bool NoTokensThree
+    {
+        set { noTokensThree = value; }
+    }
+
+    /// <summary> property <c>NoTokensFour</c> Allows safe access to noTokensFour var outside of this script, only get. </summary>
+    public bool NoTokensFour
+    {
+        set { noTokensFour = value; }
+    }
+
     #endregion
 
     public void SetPlayerData()
     {
-        // Initilises players hands lists.
+        // Initializes players hands lists.
         playerOne = new List<string>();
         playerTwo = new List<string>();
         playerThree = new List<string>();
@@ -92,29 +118,63 @@ public class NewMarketManagement : MonoBehaviour
         int playerIndex = 0;
         foreach (string key in cardKeys)
         {
-            switch (playerIndex)
+            while (true)
             {
-                case 0:
-                    playerOne.Add(key);
-                    break;
-                case 1:
-                    playerTwo.Add(key);
-                    break;
-                case 2:
-                    playerThree.Add(key);
-                    break;
-                case 3:
-                    playerFour.Add(key);
-                    break;
-                case 4:
-                    dummyHand.Add(key);
-                    break;
+                switch (playerIndex)
+                {
+                    case 0:
+                        if (!noTokensOne)
+                        {
+                            filledPlayerOne = true;
+
+                            playerOne.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 1:
+                        if (!noTokensTwo)
+                        {
+                            filledPlayerTwo = true;
+
+                            playerTwo.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 2:
+                        if (!noTokensThree)
+                        {
+                            filledPlayerThree = true;
+
+                            playerThree.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 3:
+                        if (!noTokensFour)
+                        {
+                            filledPlayerFour = true;
+
+                            playerFour.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 4:
+                        dummyHand.Add(key);
+                        playerIndex = (playerIndex + 1) % 5;
+                        goto NextKey;
+                }
+                playerIndex = (playerIndex + 1) % 5;
             }
-            playerIndex = (playerIndex + 1) % 5;
+        NextKey:;
         }
 
         OrderHands(); // Puts each hand in the correct starting order.
     }
+
 
     /// <summary> method <c>OrderHands</c> Eaiser way to order each hand, calls the OrderHand method for each hand. </summary>
     public void OrderHands()
@@ -159,8 +219,14 @@ public class NewMarketManagement : MonoBehaviour
     }
 
     /// <summary> method <c>EndRound</c> Cleans up table, resets variables. </summary>
-    public void EndRound()
+    public IEnumerator EndRound()
     {
+        // Resets filled vars.
+        filledPlayerOne = false;
+        filledPlayerTwo = false;
+        filledPlayerThree = false;
+        filledPlayerFour = false;
+
         // Reset player hands.
         playerOne.Clear();
         playerTwo.Clear();
@@ -168,15 +234,11 @@ public class NewMarketManagement : MonoBehaviour
         playerFour.Clear();
 
         // Allocates middle token pile.
-        Debug.Log("Called");
         canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
           
         // Resets horse cards + layed cards.
         canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
         canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
-
-        // Gives player new random hand.
-        SetPlayerData();
 
         // Re-Enable Player token outline/button.
         canvas.transform.Find("Tokens").GetChild(0).GetChild(0).gameObject.SetActive(true);
@@ -191,6 +253,10 @@ public class NewMarketManagement : MonoBehaviour
 
         // Resets roundEnd var.
         isEndingRound = false;
+
+        // Gives player new random hand.
+        yield return new WaitForSeconds(0.2f);
+        SetPlayerData();
     }
 
     // Start is called before the first frame update
@@ -210,11 +276,12 @@ public class NewMarketManagement : MonoBehaviour
         }
 
         // Checks if a player has finished their hand, if so ends the round.
-        if ((playerOne.Count == 0 || playerTwo.Count == 0 || playerThree.Count == 0 || playerFour.Count == 0) && !isEndingRound)
+        if ( ((playerOne.Count == 0 && filledPlayerOne) || (playerTwo.Count == 0 && filledPlayerTwo) || (playerThree.Count == 0 && filledPlayerThree) || 
+            (playerFour.Count == 0 && filledPlayerFour)) && !isEndingRound)
         {
             // Ends the roun + prevents multiple methods being called.
             isEndingRound = true;
-            EndRound();            
+            StartCoroutine(EndRound());            
         }
     }
 }
