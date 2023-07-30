@@ -34,6 +34,9 @@ public class CPUBehaviour : MonoBehaviour
     /// <summary> method <c>StartingPlay</c> Starts the CPUs play, places starting tokens + chooses a horse. </summary>
     public void StartingPlay()
     {
+        // Prevents multiple runs.
+        if (middleToken.activeInHierarchy) { return; }
+
         // Finds correct hand, depends on player name. 
         switch (gameObject.name)
         {
@@ -208,5 +211,7 @@ public class CPUBehaviour : MonoBehaviour
     void Update()
     {
         CheckForNextCard();
+
+        if (!nm.StartTokensPlaced) { StartingPlay(); }
     }
 }

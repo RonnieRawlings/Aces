@@ -55,11 +55,18 @@ public class NewMarketManagement : MonoBehaviour
 
     #endregion
 
+    #region End Game Vars
+
+    private bool isEndingRound = false;
+
+    #endregion
+
     #region Game Start Properties
 
-    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, only set. </summary>
+    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, get & set. </summary>
     public bool StartTokensPlaced
     {
+        get { return startTokensPlaced; }
         set { startTokensPlaced = value; }
     }
 
@@ -160,12 +167,10 @@ public class NewMarketManagement : MonoBehaviour
         playerThree.Clear();
         playerFour.Clear();
 
-        // Resets current card data + CPU booleans.
-        NMStaticData.latestPlayer = null;
-        NMStaticData.latestSuit = null;
-        NMStaticData.latestCard = null;
-        NMStaticData.shouldWait = false;      
-
+        // Allocates middle token pile.
+        Debug.Log("Called");
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
+          
         // Resets horse cards + layed cards.
         canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
         canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
@@ -173,8 +178,19 @@ public class NewMarketManagement : MonoBehaviour
         // Gives player new random hand.
         SetPlayerData();
 
+        // Re-Enable Player token outline/button.
+        canvas.transform.Find("Tokens").GetChild(0).GetChild(0).gameObject.SetActive(true);
+        canvas.transform.Find("Tokens").GetChild(0).GetComponent<Button>().enabled = true;
+
+        // Disables player hand.
+        canvas.transform.Find("Player 1").GetComponent<Button>().interactable = false;
+        hasEnabledHand = false;
+
         // Re-Enables starting token placement.
         startTokensPlaced = false;
+
+        // Resets roundEnd var.
+        isEndingRound = false;
     }
 
     // Start is called before the first frame update
@@ -194,11 +210,11 @@ public class NewMarketManagement : MonoBehaviour
         }
 
         // Checks if a player has finished their hand, if so ends the round.
-        if (playerOne.Count == 0 || playerTwo.Count == 0 || playerThree.Count == 0 || playerFour.Count == 0)
+        if ((playerOne.Count == 0 || playerTwo.Count == 0 || playerThree.Count == 0 || playerFour.Count == 0) && !isEndingRound)
         {
-            // Allocates middle token pile + ends the round.
-            canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
-            EndRound();
+            // Ends the roun + prevents multiple methods being called.
+            isEndingRound = true;
+            EndRound();            
         }
     }
 }

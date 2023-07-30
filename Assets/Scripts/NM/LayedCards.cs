@@ -87,7 +87,10 @@ public class LayedCards : MonoBehaviour
     /// <summary> method <c>CollectMiddleTokens</c> Allocates the middle tokens to correct player + disables middle token visuals. </summary>
     public void CollectMiddleTokens()
     {
+        UpdateStaticCardData();
+
         // Finds player using static card info.
+        Debug.Log("Player " + NMStaticData.latestPlayer);
         GameObject player = canvas.Find("Player " + NMStaticData.latestPlayer).gameObject;
 
         // Allocates tokens to correct player script.
@@ -127,8 +130,14 @@ public class LayedCards : MonoBehaviour
                     child.gameObject.SetActive(false);
                 }
             }
-            cpuScript.PlayerTokens = cpuScript.PlayerTokens + tokensToAllocate;
+            cpuScript.PlayerTokens = cpuScript.PlayerTokens + tokensToAllocate;           
         }
+
+        // Resets current card data + CPU booleans.
+        NMStaticData.latestPlayer = null;
+        NMStaticData.latestSuit = null;
+        NMStaticData.latestCard = null;
+        NMStaticData.shouldWait = false;
     }
 
     /// <summary> method <c>ResetHorses</c> Resets the sprite & active tokens of the horse cards. </summary>
@@ -161,6 +170,13 @@ public class LayedCards : MonoBehaviour
         foreach (Transform child in transform)
         {
             child.GetComponent<Image>().sprite = startingSprite;
+        }
+
+        // Get all child Image components and store their current sprites
+        foreach (Image image in GetComponentsInChildren<Image>())
+        {
+            childImages[image] = image.sprite;
+            if (startingSprite == null) { startingSprite = image.sprite; }
         }
     }
 
