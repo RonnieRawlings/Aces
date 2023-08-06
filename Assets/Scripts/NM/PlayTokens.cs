@@ -7,12 +7,22 @@ public class PlayTokens : MonoBehaviour
 {
     [SerializeField] private NewMarketManagement nmManagement;
     [SerializeField] private GameObject horseParent;
+    [SerializeField] private GameObject endScreen;
 
     public int playerTokens = 10;
 
     /// <summary> method <c>PlayStartingToken</c> Sets componets & places middle token on player click. </summary>
     public void PlayMiddleToken()
     {
+        // Ends game if player has no tokens to play.
+        if (playerTokens < 2)
+        {
+            Time.timeScale = 0.0f;
+            endScreen.SetActive(true);
+
+            return;
+        }
+
         // Removes token from player.
         playerTokens--;
 
