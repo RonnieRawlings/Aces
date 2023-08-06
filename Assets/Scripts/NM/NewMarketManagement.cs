@@ -271,7 +271,7 @@ public class NewMarketManagement : MonoBehaviour
         // Enables player hand when tokens are placed.
         if (startTokensPlaced && !hasEnabledHand)
         {
-            canvas.transform.GetChild(canvas.transform.childCount - 2).GetComponent<Button>().interactable = true;
+            canvas.transform.GetChild(canvas.transform.childCount - 3).GetComponent<Button>().interactable = true;
             hasEnabledHand = true;
         }
 
