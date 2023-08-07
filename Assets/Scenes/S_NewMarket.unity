@@ -3674,7 +3674,7 @@ MonoBehaviour:
   - {fileID: 1953368321}
   - {fileID: 14722719}
   - {fileID: 1116188559}
-  playerTokens: 2
+  playerTokens: 10
   nm: {fileID: 335155550}
   playerHand: []
   layCardPos: {fileID: 578993304}
@@ -4601,7 +4601,7 @@ MonoBehaviour:
   cardColour1: {fileID: 689757661}
   cardColour2: {fileID: 997158722}
   cardColour3: {fileID: 1905788337}
-  playerTokens: 2
+  playerTokens: 10
 --- !u!1 &1444364809
 GameObject:
   m_ObjectHideFlags: 0
@@ -5501,7 +5501,7 @@ MonoBehaviour:
   - {fileID: 1618787608}
   - {fileID: 199486648}
   - {fileID: 1943997177}
-  playerTokens: 2
+  playerTokens: 10
   nm: {fileID: 335155550}
   playerHand: []
   layCardPos: {fileID: 1199213236}
@@ -6052,7 +6052,7 @@ MonoBehaviour:
   - {fileID: 49636091}
   - {fileID: 715724884}
   - {fileID: 2057010718}
-  playerTokens: 2
+  playerTokens: 10
   nm: {fileID: 335155550}
   playerHand: []
   layCardPos: {fileID: 1444364811}

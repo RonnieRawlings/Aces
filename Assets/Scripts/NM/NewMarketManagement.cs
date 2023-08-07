@@ -248,6 +248,16 @@ public class NewMarketManagement : MonoBehaviour
         canvas.transform.Find("Player 1").GetComponent<Button>().interactable = false;
         hasEnabledHand = false;
 
+        // Changes player who is first to lay.
+        if (NMStaticData.firstToLay <= 3)
+        {
+            NMStaticData.firstToLay++;
+        }
+        else
+        {
+            NMStaticData.firstToLay = 1;
+        }
+
         // Re-Enables starting token placement.
         startTokensPlaced = false;
 
