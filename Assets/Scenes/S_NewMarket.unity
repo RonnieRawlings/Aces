@@ -3674,7 +3674,7 @@ MonoBehaviour:
   - {fileID: 1953368321}
   - {fileID: 14722719}
   - {fileID: 1116188559}
-  playerTokens: 0
+  playerTokens: 2
   nm: {fileID: 335155550}
   playerHand: []
   layCardPos: {fileID: 578993304}
@@ -5501,7 +5501,7 @@ MonoBehaviour:
   - {fileID: 1618787608}
   - {fileID: 199486648}
   - {fileID: 1943997177}
-  playerTokens: 0
+  playerTokens: 2
   nm: {fileID: 335155550}
   playerHand: []
   layCardPos: {fileID: 1199213236}

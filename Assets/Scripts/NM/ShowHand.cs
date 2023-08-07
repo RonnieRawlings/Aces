@@ -181,7 +181,7 @@ public class ShowHand : MonoBehaviour
             // Add CardHover script to obj.
             cardObject.AddComponent<CardHover>();
 
-            if (string.IsNullOrEmpty(NMStaticData.latestCard))
+            if (string.IsNullOrEmpty(NMStaticData.latestCard) && NMStaticData.firstToLay == 1)
             {
                 // Disable button if card is not a black card or not the lowest black card
                 if (cardValues[0] != "Spades" && cardValues[0] != "Clubs" || int.Parse(cardValues[1]) != lowestBlackCard)
@@ -193,7 +193,7 @@ public class ShowHand : MonoBehaviour
                     disabledButtons++;
                 }
             }    
-            else
+            else if (!string.IsNullOrEmpty(NMStaticData.latestCard))
             {               
                 // Disables any card that's not the next in the suit.
                 if (cardValues[0] != latestCard[0] || int.Parse(cardValues[1]) != int.Parse(latestCard[1]) + 1)
@@ -205,6 +205,15 @@ public class ShowHand : MonoBehaviour
                     // Increments the db count.
                     disabledButtons++;
                 }
+            }
+            else
+            {
+                // Disables the button.
+                Button button = cardObject.GetComponent<Button>();
+                button.interactable = false;
+
+                // Increments the db count.
+                disabledButtons++;
             }
 
             // Gives access to spawned obj.

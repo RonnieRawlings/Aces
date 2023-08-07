@@ -148,11 +148,30 @@ public class CPUBehaviour : MonoBehaviour
     /// <summary> method <c>CheckForNextCard</c> Spilts latestCard into rank/suit & checks if player hand has the next card. </summary>
     public void CheckForNextCard()
     {
-        // Prevents checking when no card has been layed.
-        if (string.IsNullOrEmpty(NMStaticData.latestCard) || playerHand.Count == 0) { return; }
-
         // Define the order of ranks
         string[] ranks = new string[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+
+        // Lays starting card if CPU is the first to lay.
+        if (string.IsNullOrEmpty(NMStaticData.latestCard) && NMStaticData.firstToLay == int.Parse(this.name.Split(' ')[1]) && !NMStaticData.shouldWait)
+        {
+            // Find the lowest red cards.
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Hearts") || card.EndsWith("Diamonds"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // Lays down the next card.
+            StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+        }
+
+        // Prevents checking when no card has been layed.
+        if (string.IsNullOrEmpty(NMStaticData.latestCard) || playerHand.Count == 0) { return; }
 
         // Split NMStaticData.latestCard into rank and suit
         string[] parts = NMStaticData.latestCard.Split(new string[] { " of " }, System.StringSplitOptions.None);
@@ -244,9 +263,14 @@ public class CPUBehaviour : MonoBehaviour
 
     // Called once at the start of each frame.
     void Update()
-    {
-        CheckForNextCard();
-
-        if (!nm.StartTokensPlaced) { StartingPlay(); HandAssignment(); }
+    {               
+        if (!nm.StartTokensPlaced) 
+        { 
+            StartingPlay(); HandAssignment(); 
+        }
+        else
+        {
+            CheckForNextCard();
+        }
     }
 }
