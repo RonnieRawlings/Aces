@@ -14,10 +14,11 @@ public class NewMarketManagement : MonoBehaviour
     
     #region Player Hand Properties
 
-    /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, only get. </summary>
+    /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, get & sets. </summary>
     public List<string> PlayerOne
     {
         get { return playerOne; }
+        set { playerOne = value; }
     }
 
     /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, get & set. </summary>
@@ -41,10 +42,11 @@ public class NewMarketManagement : MonoBehaviour
         set { playerFour = value; }
     }
 
-    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, only get. </summary>
+    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, get & set. </summary>
     public List<string> DummyHand
     {
         get { return dummyHand; }
+        set { dummyHand = value; }
     }
 
     #endregion
