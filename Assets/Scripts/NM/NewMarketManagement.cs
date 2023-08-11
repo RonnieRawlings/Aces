@@ -246,6 +246,10 @@ public class NewMarketManagement : MonoBehaviour
         canvas.transform.Find("Tokens").GetChild(0).GetChild(0).gameObject.SetActive(true);
         canvas.transform.Find("Tokens").GetChild(0).GetComponent<Button>().enabled = true;
 
+        // Re-Enables dummy hand selection.
+        canvas.transform.Find("DummyHand").GetComponent<Outline>().enabled = true;
+        canvas.transform.Find("DummyHand").GetComponent<Button>().enabled = true;
+
         // Disables player hand.
         canvas.transform.Find("Player 1").GetComponent<Button>().interactable = false;
         hasEnabledHand = false;
