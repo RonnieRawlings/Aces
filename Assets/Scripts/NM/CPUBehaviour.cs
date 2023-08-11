@@ -20,8 +20,56 @@ public class CPUBehaviour : MonoBehaviour
     [SerializeField] private List<string> playerHand = new List<string>();
     [SerializeField] private Image layCardPos;
 
+    #region Properties
+
+    /// <summary> property <c>PlayerTokens</c> Allows safe access to the playerTokens var, get & set. </summary>
+    public int PlayerTokens
+    {
+        get { return playerTokens; }
+        set { playerTokens = value; }
+    }
+
+    #endregion
+
     /// <summary> method <c>StartingPlay</c> Starts the CPUs play, places starting tokens + chooses a horse. </summary>
     public void StartingPlay()
+    {
+        // Prevents multiple runs.
+        if (middleToken.activeInHierarchy) { return; }
+
+        // Takes player out of the game. 
+        if (playerTokens < 2) 
+        {
+            if (gameObject.name == "Player 2") { nm.NoTokensTwo = true; }
+            else if (gameObject.name == "Player 3") { nm.NoTokensThree = true; }
+            else { nm.NoTokensFour = true; }
+
+            // Change card hand visuals.
+            Transform cards = transform.GetChild(0);
+            foreach (Transform child in cards)
+            {
+                // Access colour + alpha values, changes them.
+                Color imageColor = child.GetComponent<Image>().color;
+                imageColor.r = 200f / 255f;
+                imageColor.g = 200f / 255f;
+                imageColor.b = 200f / 255f;
+                imageColor.a = 128f / 255f;
+
+                // Applies colour changes.
+                child.GetComponent<Image>().color = imageColor;
+            }
+
+            return;
+        }
+      
+        // Plays starting tokens.
+        playerTokens = playerTokens - 2;
+        middleToken.SetActive(true);
+        horseTokens[UnityEngine.Random.Range(0, 4)].SetActive(true);
+    }
+
+    /// <summary> method <c>HandAssignment</c> Assigns the players hand to the CPU script. </summary>
+    public void HandAssignment()
     {
         // Finds correct hand, depends on player name. 
         switch (gameObject.name)
@@ -36,21 +84,94 @@ public class CPUBehaviour : MonoBehaviour
                 playerHand = nm.PlayerFour;
                 break;
         }
+    }
 
-        // Plays starting tokens.
-        playerTokens = playerTokens - 2;
-        middleToken.SetActive(true);
-        horseTokens[UnityEngine.Random.Range(0, 4)].SetActive(true);
+    /// <summary> method <c>ChangeSuit</c> Finds the lowest of the opposite suit colour, lays the card. </summary>
+    public void ChangeSuit(string[] ranks)
+    {
+        if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
+        {
+            // Find the lowest card of the selected randSuit in the CPU's hand
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Hearts") || card.EndsWith("Diamonds"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // If red card is found, lay it.
+            if (cardsOfSelectedSuit.Count > 0)
+            {
+                // Lays down the next card.
+                StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+            }
+            else
+            {
+                // Change suit to black.
+                NMStaticData.latestSuit = "Hearts";
+                ChangeSuit(ranks);
+            }                      
+        }
+        else
+        {
+            // Find the lowest card of the selected randSuit in the CPU's hand
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Clubs") || card.EndsWith("Spades"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // If red card is found, lay it.
+            if (cardsOfSelectedSuit.Count > 0)
+            {
+                // Lays down the next card.
+                StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+            }
+            else
+            {
+                // Change suit to red.
+                NMStaticData.latestSuit = "Spades";
+                ChangeSuit(ranks);
+            }
+        }
     }
 
     /// <summary> method <c>CheckForNextCard</c> Spilts latestCard into rank/suit & checks if player hand has the next card. </summary>
     public void CheckForNextCard()
     {
-        // Prevents checking when no card has been layed.
-        if (string.IsNullOrEmpty(NMStaticData.latestCard)) { return; }
-
         // Define the order of ranks
         string[] ranks = new string[] { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+
+        // Lays starting card if CPU is the first to lay.
+        if (string.IsNullOrEmpty(NMStaticData.latestCard) && NMStaticData.firstToLay == int.Parse(this.name.Split(' ')[1]) && !NMStaticData.shouldWait)
+        {
+            // Find the lowest red cards.
+            List<string> cardsOfSelectedSuit = new List<string>();
+            foreach (string card in playerHand)
+            {
+                if (card.EndsWith("Hearts") || card.EndsWith("Diamonds"))
+                {
+                    cardsOfSelectedSuit.Add(card);
+                }
+            }
+            cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
+                CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
+
+            // Lays down the next card.
+            StartCoroutine(LayNextCard(cardsOfSelectedSuit[0]));
+        }
+
+        // Prevents checking when no card has been layed.
+        if (string.IsNullOrEmpty(NMStaticData.latestCard) || playerHand.Count == 0) { return; }
 
         // Split NMStaticData.latestCard into rank and suit
         string[] parts = NMStaticData.latestCard.Split(new string[] { " of " }, System.StringSplitOptions.None);
@@ -77,64 +198,15 @@ public class CPUBehaviour : MonoBehaviour
             }
             else if (!NMStaticData.shouldWait && NMStaticData.latestPlayer == this.name.Split(' ')[1])
             {
-                if (nm.DummyHand.Contains(nextCard))
+                if ((!nm.PlayerOne.Contains(nextCard) && !nm.PlayerTwo.Contains(nextCard) && !nm.PlayerThree.Contains(nextCard) && !nm.PlayerFour.Contains(nextCard)) || nm.DummyHand.Contains(nextCard))
                 {
-                    // Prevents other AI methods from running.
-                    Debug.Log("SHOULD CHANGE SUIT!");
-                    NMStaticData.shouldWait = true;
-
-                    if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
-                    {
-                        // Switch the suit to lay to red.
-                        string randSuit;
-                        if (UnityEngine.Random.Range(0, 2) == 0) { randSuit = "Hearts"; }
-                        else { randSuit = "Diamonds"; }
-
-                        // Find the lowest card of the selected randSuit in the CPU's hand
-                        List<string> cardsOfSelectedSuit = new List<string>();
-                        foreach (string card in playerHand)
-                        {
-                            if (card.EndsWith(randSuit))
-                            {
-                                cardsOfSelectedSuit.Add(card);
-                            }
-                        }
-                        cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
-                            CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
-
-                        // The lowest card of the selected suit in the hand.
-                        string lowestCardOfSelectedSuit = cardsOfSelectedSuit[0];
-
-                        // Lays down the next card.
-                        StartCoroutine(LayNextCard(lowestCardOfSelectedSuit));
-                    }
-                    else
-                    {
-                        // Switch the suit to lay to black.
-                        string randSuit;
-                        if (UnityEngine.Random.Range(0, 2) == 0) { randSuit = "Clubs"; }
-                        else { randSuit = "Spades"; }
-
-                        // Find the lowest card of the selected randSuit in the CPU's hand
-                        List<string> cardsOfSelectedSuit = new List<string>();
-                        foreach (string card in playerHand)
-                        {
-                            if (card.EndsWith(randSuit))
-                            {
-                                cardsOfSelectedSuit.Add(card);
-                            }
-                        }
-                        cardsOfSelectedSuit.Sort((card1, card2) => Array.IndexOf(ranks, card1.Split(' ')[0]).
-                            CompareTo(Array.IndexOf(ranks, card2.Split(' ')[0])));
-
-                        // The lowest card of the selected suit in the hand.
-                        string lowestCardOfSelectedSuit = cardsOfSelectedSuit[0];
-
-                        // Lays down the next card.
-                        StartCoroutine(LayNextCard(lowestCardOfSelectedSuit));
-                    }
+                    ChangeSuit(ranks);
                 }
             }
+        }
+        else if (!NMStaticData.shouldWait && NMStaticData.latestPlayer == this.name.Split(' ')[1])
+        {
+            ChangeSuit(ranks);
         }
     }
 
@@ -143,7 +215,7 @@ public class CPUBehaviour : MonoBehaviour
     {
         // Prevents multiple laying routines + gives player time to adjust.
         NMStaticData.shouldWait = true;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         // Outline, shows player the card.
         layCardPos.GetComponent<Outline>().enabled = true;
@@ -160,18 +232,45 @@ public class CPUBehaviour : MonoBehaviour
         yield return new WaitForSeconds(2f);
         layCardPos.GetComponent<Outline>().enabled = false;
 
+        // Removes card from hand.
+        switch (gameObject.name)
+        {
+            case "Player 2":
+                nm.PlayerTwo.Remove(cardName);
+                break;
+            case "Player 3":
+                nm.PlayerThree.Remove(cardName);
+                break;
+            case "Player 4":
+                nm.PlayerFour.Remove(cardName);
+                break;
+        }
+
         NMStaticData.shouldWait = false; // Allows more laying routines.
+    }
+
+    // Called once just before start.
+    void Awake()
+    {
+        StartingPlay();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        StartingPlay();
+        HandAssignment();
     }
 
     // Called once at the start of each frame.
     void Update()
-    {
-        CheckForNextCard();
+    {               
+        if (!nm.StartTokensPlaced) 
+        { 
+            StartingPlay(); HandAssignment(); 
+        }
+        else
+        {
+            CheckForNextCard();
+        }
     }
 }

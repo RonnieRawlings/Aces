@@ -61,9 +61,11 @@ public class ShowHand : MonoBehaviour
     }
     
     /// <summary> method <c>ChangeSuit</c> Changes which suits buttons are enabled. </summary>
-    public void ChangeSuit(List<GameObject> playerHand, int lowestCard, bool isBlack)
+    public bool ChangeSuit(List<GameObject> playerHand, int lowestCard, bool isBlack)
     {
-        // Iterate through playerHand list
+        if (lowestCard == int.MaxValue) { Debug.Log("MAX VALUE"); }
+
+        // Iterate through playerHand list      
         for (int i = 0; i < playerHand.Count; i++)
         {
             // Gets suit & rank of current card.
@@ -71,23 +73,29 @@ public class ShowHand : MonoBehaviour
 
             if (isBlack)
             {
-                // Disable button if card is not a black card or not the lowest black card
+                // Enable button if card is a black card & the lowest black card
                 if ((cardValues[0] == "Spades" || cardValues[0] == "Clubs") && int.Parse(cardValues[1]) == lowestCard)
                 {
                     Button button = playerHand[i].GetComponent<Button>();
                     button.interactable = true;
+
+                    return true;
                 }
             }
             else
             {
-                // Disable button if card is not a black card or not the lowest red card
+                // Enable button if card is not a black card or not the lowest red card
                 if ((cardValues[0] == "Hearts" || cardValues[0] == "Diamonds") && int.Parse(cardValues[1]) == lowestCard)
                 {
                     Button button = playerHand[i].GetComponent<Button>();
                     button.interactable = true;
+
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
     /// <summary> method <c>ShowPlayerHand</c> Shows the players current hand on button press. </summary>
@@ -173,7 +181,7 @@ public class ShowHand : MonoBehaviour
             // Add CardHover script to obj.
             cardObject.AddComponent<CardHover>();
 
-            if (string.IsNullOrEmpty(NMStaticData.latestCard))
+            if (string.IsNullOrEmpty(NMStaticData.latestCard) && NMStaticData.firstToLay == 1)
             {
                 // Disable button if card is not a black card or not the lowest black card
                 if (cardValues[0] != "Spades" && cardValues[0] != "Clubs" || int.Parse(cardValues[1]) != lowestBlackCard)
@@ -185,7 +193,7 @@ public class ShowHand : MonoBehaviour
                     disabledButtons++;
                 }
             }    
-            else
+            else if (!string.IsNullOrEmpty(NMStaticData.latestCard))
             {               
                 // Disables any card that's not the next in the suit.
                 if (cardValues[0] != latestCard[0] || int.Parse(cardValues[1]) != int.Parse(latestCard[1]) + 1)
@@ -198,21 +206,39 @@ public class ShowHand : MonoBehaviour
                     disabledButtons++;
                 }
             }
+            else
+            {
+                // Disables the button.
+                Button button = cardObject.GetComponent<Button>();
+                button.interactable = false;
+
+                // Increments the db count.
+                disabledButtons++;
+            }
 
             // Gives access to spawned obj.
             createdObjs.Add(cardObject);
         }
 
         // Calls ChangeSuit when player has reached a dead end.
-        if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count)
+        if (NMStaticData.latestPlayer == "1" && disabledButtons == playerHand.Count && !NMStaticData.shouldWait)
         {
             if (NMStaticData.latestSuit == "Spades" || NMStaticData.latestSuit == "Clubs")
             {
-                ChangeSuit(createdObjs, lowestRedCard, false);
+                // IF no reds, enable lowest black.
+                if (!ChangeSuit(createdObjs, lowestRedCard, false))
+                {
+                    ChangeSuit(createdObjs, lowestBlackCard, true);
+                }
+                
             }
             else if (NMStaticData.latestSuit == "Hearts" || NMStaticData.latestSuit == "Diamonds")
             {
-                ChangeSuit(createdObjs, lowestBlackCard, true);
+                // IF no blacks, enable lowest red.
+                if (!ChangeSuit(createdObjs, lowestBlackCard, true))
+                {
+                    ChangeSuit(createdObjs, lowestRedCard, false);
+                }                
             }
         }
     }

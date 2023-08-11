@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class NewMarketManagement : MonoBehaviour
@@ -13,34 +14,39 @@ public class NewMarketManagement : MonoBehaviour
     
     #region Player Hand Properties
 
-    /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, only get. </summary>
+    /// <summary> property <c>PlayerOne</c> Allows other scripts safe access to the playerOne variable, get & sets. </summary>
     public List<string> PlayerOne
     {
         get { return playerOne; }
+        set { playerOne = value; }
     }
 
-    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, only get. </summary>
+    /// <summary> property <c>PlayerTwo</c> Allows other scripts safe access to the playerTwo variable, get & set. </summary>
     public List<string> PlayerTwo
     {
         get { return playerTwo; }
+        set { playerTwo = value; }
     }
 
-    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, only get. </summary>
+    /// <summary> property <c>PlayerThree</c> Allows other scripts safe access to the playerThree variable, get & set. </summary>
     public List<string> PlayerThree
     {
         get { return playerThree; }
+        set { playerThree = value; }
     }
 
-    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, only get. </summary>
+    /// <summary> property <c>PlayerFour</c> Allows other scripts safe access to the playerFour variable, get & set. </summary>
     public List<string> PlayerFour
     {
         get { return playerFour; }
+        set { playerFour = value; }
     }
 
-    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, only get. </summary>
+    /// <summary> property <c>DummyHand</c> Allows other scripts safe access to the dunnyHand variable, get & set. </summary>
     public List<string> DummyHand
     {
         get { return dummyHand; }
+        set { dummyHand = value; }
     }
 
     #endregion
@@ -48,22 +54,55 @@ public class NewMarketManagement : MonoBehaviour
     #region Game Start Vars
 
     private bool startTokensPlaced = false, hasEnabledHand = false;
+    public bool noTokensOne = false, noTokensTwo = false, noTokensThree = false, noTokensFour = false;
+    private bool filledPlayerOne = false, filledPlayerTwo = false, filledPlayerThree = false, filledPlayerFour;
+
+    #endregion
+
+    #region End Game Vars
+
+    private bool isEndingRound = false;
 
     #endregion
 
     #region Game Start Properties
 
-    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, only set. </summary>
+    /// <summary> property <c>StartTokensPlaced</c> Allows safe access to startTokensPlaced var outside of this script, get & set. </summary>
     public bool StartTokensPlaced
     {
+        get { return startTokensPlaced; }
         set { startTokensPlaced = value; }
+    }
+
+    /// <summary> property <c>NoTokensOne</c> Allows safe access to noTokensOne var outside of this script, only get. </summary>
+    public bool NoTokensOne
+    {
+        set { noTokensOne = value; }
+    }
+
+    /// <summary> property <c>NoTokensTwo</c> Allows safe access to noTokensTwo var outside of this script, only get. </summary>
+    public bool NoTokensTwo
+    {
+        set { noTokensTwo = value; }
+    }
+
+    /// <summary> property <c>NoTokensThree</c> Allows safe access to noTokensThree var outside of this script, only get. </summary>
+    public bool NoTokensThree
+    {
+        set { noTokensThree = value; }
+    }
+
+    /// <summary> property <c>NoTokensFour</c> Allows safe access to noTokensFour var outside of this script, only get. </summary>
+    public bool NoTokensFour
+    {
+        set { noTokensFour = value; }
     }
 
     #endregion
 
     public void SetPlayerData()
     {
-        // Initilises players hands lists.
+        // Initializes players hands lists.
         playerOne = new List<string>();
         playerTwo = new List<string>();
         playerThree = new List<string>();
@@ -81,29 +120,63 @@ public class NewMarketManagement : MonoBehaviour
         int playerIndex = 0;
         foreach (string key in cardKeys)
         {
-            switch (playerIndex)
+            while (true)
             {
-                case 0:
-                    playerOne.Add(key);
-                    break;
-                case 1:
-                    playerTwo.Add(key);
-                    break;
-                case 2:
-                    playerThree.Add(key);
-                    break;
-                case 3:
-                    playerFour.Add(key);
-                    break;
-                case 4:
-                    dummyHand.Add(key);
-                    break;
+                switch (playerIndex)
+                {
+                    case 0:
+                        if (!noTokensOne)
+                        {
+                            filledPlayerOne = true;
+
+                            playerOne.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 1:
+                        if (!noTokensTwo)
+                        {
+                            filledPlayerTwo = true;
+
+                            playerTwo.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 2:
+                        if (!noTokensThree)
+                        {
+                            filledPlayerThree = true;
+
+                            playerThree.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 3:
+                        if (!noTokensFour)
+                        {
+                            filledPlayerFour = true;
+
+                            playerFour.Add(key);
+                            playerIndex = (playerIndex + 1) % 5;
+                            goto NextKey;
+                        }
+                        break;
+                    case 4:
+                        dummyHand.Add(key);
+                        playerIndex = (playerIndex + 1) % 5;
+                        goto NextKey;
+                }
+                playerIndex = (playerIndex + 1) % 5;
             }
-            playerIndex = (playerIndex + 1) % 5;
+        NextKey:;
         }
 
         OrderHands(); // Puts each hand in the correct starting order.
     }
+
 
     /// <summary> method <c>OrderHands</c> Eaiser way to order each hand, calls the OrderHand method for each hand. </summary>
     public void OrderHands()
@@ -147,6 +220,61 @@ public class NewMarketManagement : MonoBehaviour
         playerOne.Remove(cardName); // Removes card from players hand.
     }
 
+    /// <summary> method <c>EndRound</c> Cleans up table, resets variables. </summary>
+    public IEnumerator EndRound()
+    {
+        // Resets filled vars.
+        filledPlayerOne = false;
+        filledPlayerTwo = false;
+        filledPlayerThree = false;
+        filledPlayerFour = false;
+
+        // Reset player hands.
+        playerOne.Clear();
+        playerTwo.Clear();
+        playerThree.Clear();
+        playerFour.Clear();
+
+        // Allocates middle token pile.
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
+          
+        // Resets horse cards + layed cards.
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
+        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
+
+        // Re-Enable Player token outline/button.
+        canvas.transform.Find("Tokens").GetChild(0).GetChild(0).gameObject.SetActive(true);
+        canvas.transform.Find("Tokens").GetChild(0).GetComponent<Button>().enabled = true;
+
+        // Re-Enables dummy hand selection.
+        canvas.transform.Find("DummyHand").GetComponent<Outline>().enabled = true;
+        canvas.transform.Find("DummyHand").GetComponent<Button>().enabled = true;
+
+        // Disables player hand.
+        canvas.transform.Find("Player 1").GetComponent<Button>().interactable = false;
+        hasEnabledHand = false;
+
+        // Changes player who is first to lay.
+        if (NMStaticData.firstToLay <= 3)
+        {
+            NMStaticData.firstToLay++;
+        }
+        else
+        {
+            NMStaticData.firstToLay = 1;
+        }
+
+        // Re-Enables starting token placement.
+        startTokensPlaced = false;
+
+        // Resets roundEnd var.
+        isEndingRound = false;
+
+        // Gives player new random hand.
+        yield return new WaitForSeconds(0.2f);
+        SetPlayerData();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -159,8 +287,17 @@ public class NewMarketManagement : MonoBehaviour
         // Enables player hand when tokens are placed.
         if (startTokensPlaced && !hasEnabledHand)
         {
-            canvas.transform.GetChild(canvas.transform.childCount - 1).GetComponent<Button>().interactable = true;
+            canvas.transform.GetChild(canvas.transform.childCount - 3).GetComponent<Button>().interactable = true;
             hasEnabledHand = true;
+        }
+
+        // Checks if a player has finished their hand, if so ends the round.
+        if ( ((playerOne.Count == 0 && filledPlayerOne) || (playerTwo.Count == 0 && filledPlayerTwo) || (playerThree.Count == 0 && filledPlayerThree) || 
+            (playerFour.Count == 0 && filledPlayerFour)) && !isEndingRound)
+        {
+            // Ends the roun + prevents multiple methods being called.
+            isEndingRound = true;
+            StartCoroutine(EndRound());            
         }
     }
 }
