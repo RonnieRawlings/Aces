@@ -296,6 +296,11 @@ public class NewMarketManagement : MonoBehaviour
         if (startTokensPlaced && !hasEnabledHand)
         {
             canvas.transform.GetChild(canvas.transform.childCount - 4).GetComponent<Button>().interactable = true;
+
+            // Disables purchasing of the dummy hand.
+            canvas.transform.Find("DummyHand").GetComponent<Outline>().enabled = false;
+            canvas.transform.Find("DummyHand").GetComponent<Button>().enabled = false;
+
             hasEnabledHand = true;
         }
 
