@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class NMStaticData
 {
-    public static int firstToLay = 1;
+    public static int firstToLay = 0;
     public static string latestCard, latestPlayer, latestSuit;
     public static bool shouldWait = false;
 }

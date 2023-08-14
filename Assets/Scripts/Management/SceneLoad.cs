@@ -10,6 +10,7 @@ public class SceneLoad : MonoBehaviour
     /// <summary> method <c>LoadScene</c> Takes string name, uses SceneManagement to load scene by name. </summary>
     public void LoadScene(string sceneName)
     {
+        Time.timeScale = 1.0f;
         SceneManager.LoadScene(sceneName);
     }
 

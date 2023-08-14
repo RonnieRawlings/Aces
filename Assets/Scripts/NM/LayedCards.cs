@@ -166,6 +166,9 @@ public class LayedCards : MonoBehaviour
     /// <summary> method <c>ResetLayedCards</c> Sets layed card places back to UI Masks. </summary>
     public void ResetLayedCards()
     {
+        // Prevents visual white slot issue.
+        if (childImages.Count == 0) { return; }
+
         // Sets each child image as UI Mask.
         foreach (Transform child in transform)
         {

@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -234,14 +235,15 @@ public class NewMarketManagement : MonoBehaviour
         playerTwo.Clear();
         playerThree.Clear();
         playerFour.Clear();
-
-        // Allocates middle token pile.
-        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
           
-        // Resets horse cards + layed cards.
-        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
-        canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
-
+        // Resets horse cards + layed cards + allocates middle pile.
+        if (!string.IsNullOrEmpty(NMStaticData.latestPlayer))
+        {
+            canvas.transform.Find("LayedCards").GetComponent<LayedCards>().CollectMiddleTokens();
+            canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetHorses();
+            canvas.transform.Find("LayedCards").GetComponent<LayedCards>().ResetLayedCards();
+        }
+        
         // Re-Enable Player token outline/button.
         canvas.transform.Find("Tokens").GetChild(0).GetChild(0).gameObject.SetActive(true);
         canvas.transform.Find("Tokens").GetChild(0).GetComponent<Button>().enabled = true;
@@ -275,6 +277,12 @@ public class NewMarketManagement : MonoBehaviour
         SetPlayerData();
     }
 
+    // Called once on script initilization.
+    void Awake()
+    {
+        StartCoroutine(EndRound());
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -287,7 +295,7 @@ public class NewMarketManagement : MonoBehaviour
         // Enables player hand when tokens are placed.
         if (startTokensPlaced && !hasEnabledHand)
         {
-            canvas.transform.GetChild(canvas.transform.childCount - 3).GetComponent<Button>().interactable = true;
+            canvas.transform.GetChild(canvas.transform.childCount - 4).GetComponent<Button>().interactable = true;
             hasEnabledHand = true;
         }
 
